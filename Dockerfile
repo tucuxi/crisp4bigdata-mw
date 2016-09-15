@@ -128,6 +128,22 @@ ADD web/Caddyfile /usr/share/landoop
 COPY web/index.html web/env.js /var/www/
 COPY web/img /var/www/img
 
+# Log to Kafka
+RUN echo -e "\nlog4j.appender.KAFKA=org.apache.kafka.log4jappender.KafkaLog4jAppender" > /tmp/log4j \
+    && echo "log4j.appender.KAFKA.layout=org.apache.log4j.PatternLayout" >> /tmp/log4j \
+    && echo "log4j.appender.KAFKA.layout.ConversionPattern=%d{ISO8601} %p %c: %m%n" >> /tmp/log4j \
+    && echo "log4j.appender.KAFKA.BrokerList=localhost:9092" >> /tmp/log4j \
+    && echo "log4j.category.org.apache.kafka=INFO" >> /tmp/log4j \
+    && echo "log4j.rootLogger=INFO, stdout, KAFKA" >> /tmp/log4j \
+    && cat /tmp/log4j | tee -a \
+       /opt/confluent-3.0.1/etc/kafka/connect-log4j.properties \
+       /opt/confluent-3.0.1/etc/kafka-rest/log4j.properties \
+       /opt/confluent-3.0.1/etc/schema-registry/log4j.properties \
+    && echo "log4j.appender.KAFKA.Topic=logs-connect-distributed" >> /opt/confluent-3.0.1/etc/kafka/connect-log4j.properties \
+    && echo "log4j.appender.KAFKA.Topic=logs-schema-registry" >> /opt/confluent-3.0.1/etc/schema-registry/log4j.properties \
+    && echo "log4j.appender.KAFKA.Topic=logs-kafka-rest" >> /opt/confluent-3.0.1/etc/kafka-rest/log4j.properties \
+    && rm /tmp/log4j
+
 ADD supervisord.conf /etc/supervisord.conf
 ADD setup-and-run.sh /usr/local/bin
 RUN chmod +x /usr/local/bin/setup-and-run.sh
