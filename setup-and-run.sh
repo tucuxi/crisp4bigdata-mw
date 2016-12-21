@@ -6,8 +6,9 @@ REGISTRY_PORT="${REGISTRY_PORT:-8081}"
 REST_PORT="${REST_PORT:-8082}"
 CONNECT_PORT="${CONNECT_PORT:-8083}"
 WEB_PORT="${WEB_PORT:-3030}"
+#KAFKA_MANAGER_PORT="3031"
 
-PORTS="$ZK_PORT $BROKER_PORT $REGISTRY_PORT $REST_PORT $CONNECT_PORT $WEB_PORT"
+PORTS="$ZK_PORT $BROKER_PORT $REGISTRY_PORT $REST_PORT $CONNECT_PORT $WEB_PORT $KAFKA_MANAGER_PORT"
 
 if echo $WEB_ONLY | egrep -sq "true|TRUE|y|Y|yes|YES|1"; then
     PORTS="$WEB_PORT"
@@ -74,7 +75,14 @@ sed -e 's/3030/'"$WEB_PORT"'/' -e 's/2181/'"$ZK_PORT"'/' -e 's/9092/'"$BROKER_PO
        /usr/share/landoop/kafka-tests.yml \
        /usr/local/bin/logs-to-kafka.sh
 
-# Set AV_HOST if needed
+# Remove ElasticSearch if needed
+PREFER_HBASE="${PREFER_HBASE:-false}"
+if echo $PREFER_HBASE | egrep -sq "true|TRUE|y|Y|yes|YES|1"; then
+    rm -rf /extra-connect-jars/* /opt/confluent-*/share/java/kafka-connect-elastic*
+    echo -e "\e[92mFixing HBase connector: Removing ElasticSearch and Twitter connector.\e[39m"
+fi
+
+# Set ADV_HOST if needed
 if [[ ! -z "${ADV_HOST}" ]]; then
     echo -e "\e[92mSetting advertised host to \e[96m${ADV_HOST}\e[34m\e[92m.\e[34m"
     echo -e "\nadvertised.listeners=PLAINTEXT://${ADV_HOST}:$BROKER_PORT" \

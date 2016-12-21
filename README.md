@@ -66,6 +66,11 @@ The latest version of this docker image packages:
 + DataMountaineer Stream Reactor 0.2.2
 + Landoop Fast Data Web UIs 0.7
 
+Please note that Fast Data Web UIs are
+[licensed under BSL](http://www.landoop.com/bsl/), which means you should
+contact us if you plan to use them on production clusters with more than 4
+nodes.
+
 ## Advanced
 
 ### Custom Connectors
@@ -132,6 +137,17 @@ requisite:
 
 This is useful if you already have a cluster with Confluent's distribution
 install and want a fancy UI.
+
+### HBase Connector
+
+Due to some issues with dependencies, the ElasticSearch connector and the HBase
+connector cannot coexist. Whilst both are available, HBase won't work. We do provide
+the `PREFER_HBASE` environment variable which will remove ElasticSearch (and the
+Twitter connector) to let HBase work:
+
+    docker run --rm -it --net=host \
+               -e PREFER_HBASE=true \
+               landoop/fast-data-dev
 
 ## FAQ
 
