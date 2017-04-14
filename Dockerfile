@@ -62,6 +62,19 @@ ARG TWITTER_CONNECTOR_URL="https://archive.landoop.com/third-party/kafka-connect
 RUN mkdir -p /opt/confluent/share/java/kafka-connect-twitter \
     && wget "$TWITTER_CONNECTOR_URL" -P /opt/confluent/share/java/kafka-connect-twitter
 
+# Add Debezium Connectors
+RUN wget 'http://search.maven.org/remotecontent?filepath=io/debezium/debezium-connector-mysql/0.5.0/debezium-connector-mysql-0.5.0-plugin.tar.gz' \
+        -O /debezium-connector-mysql.tgz \
+    && wget 'http://search.maven.org/remotecontent?filepath=io/debezium/debezium-connector-mongodb/0.5.0/debezium-connector-mongodb-0.5.0-plugin.tar.gz' \
+        -O /debezium-connector-mongodb.tgz \
+    && wget 'http://search.maven.org/remotecontent?filepath=io/debezium/debezium-connector-postgres/0.5.0/debezium-connector-postgres-0.5.0-plugin.tar.gz' \
+        -O /debezium-connector-postgres.tgz \
+    && bash -c 'mkdir -p /opt/confluent/share/java/kafka-connect-debezium-{mysql,mongodb,postgres}' \
+    && tar xf /debezium-connector-mysql.tgz -C /opt/confluent/share/java/kafka-connect-debezium-mysql --no-same-owner --strip-components 1 \
+    && tar xf /debezium-connector-mongodb.tgz -C /opt/confluent/share/java/kafka-connect-debezium-mongodb --no-same-owner --strip-components 1 \
+    && tar xf /debezium-connector-postgres.tgz -C /opt/confluent/share/java/kafka-connect-debezium-postgres --no-same-owner --strip-components 1 \
+    && bash -c 'rm -f /debezium-connector-{mysql,mongodb,postgres}.tgz'
+
 # Add dumb init and quickcert
 RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 -O /usr/local/bin/dumb-init \
     && wget https://github.com/andmarios/quickcert/releases/download/1.0/quickcert-1.0-linux-amd64-alpine -O /usr/local/bin/quickcert \
