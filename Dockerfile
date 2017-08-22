@@ -71,6 +71,22 @@ RUN echo "access.control.allow.methods=GET,POST,PUT,DELETE,OPTIONS" >> /opt/conf
 # RUN mkdir -p /opt/confluent/share/java/kafka-connect-twitter \
 #     && wget "$TWITTER_CONNECTOR_URL" -P /opt/confluent/share/java/kafka-connect-twitter
 
+# Add S
+ARG S_URL
+ARG S_NAME
+RUN wget "$S_URL" -O /s.tgz \
+    && tar xf s.tgz -C /opt \
+    && rm /s.tgz
+ADD extras/supervisord-s.conf /etc/supervisord.d/
+RUN sed -e 's|http://192\.168\.99\.100:8081|http://localhost:3030/api/schema-registry|' \
+        -e 's|http://192\.168\.99\.100:8083|http://localhost:3030/api/kafka-connect|'  \
+        -e 's/192\.168\.99\.100/127.0.0.1/g' -i "/opt/release/$S_NAME.conf" \
+    && sed -e 's|release/bin/s|release/bin/'"$S_NAME"'|' -i "/etc/supervisord.d/supervisord-s.conf" \
+    && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/unreleased/glibc-2.25-r1.apk \
+    && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/unreleased/glibc-bin-2.25-r1.apk \
+    && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/unreleased/glibc-i18n-2.25-r1.apk \
+    &&  apk add --no-cache --allow-untrusted glibc-2.25-r1.apk glibc-bin-2.25-r1.apk glibc-i18n-2.25-r1.apk
+
 # Add dumb init and quickcert
 RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 -O /usr/local/bin/dumb-init \
     && wget https://github.com/andmarios/quickcert/releases/download/1.0/quickcert-1.0-linux-amd64-alpine -O /usr/local/bin/quickcert \
