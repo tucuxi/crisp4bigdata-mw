@@ -83,8 +83,9 @@ RUN wget "$S_URL" -O /s.tgz \
     && tar xf s.tgz -C /opt \
     && rm /s.tgz
 ADD extras/supervisord-s.conf /etc/supervisord.d/
-RUN sed -e 's|http://192\.168\.99\.100:8081|http://localhost:3030/api/schema-registry|' \
-        -e 's|http://192\.168\.99\.100:8083|http://localhost:3030/api/kafka-connect|'  \
+ARG FDD_URL="http://localhost:3030"
+RUN sed -e 's|http://192\.168\.99\.100:8081|'"$FDD_URL"'/api/schema-registry|' \
+        -e 's|http://192\.168\.99\.100:8083|'"$FDD_URL"'/api/kafka-connect|'  \
         -e 's/192\.168\.99\.100/127.0.0.1/g' -i "/opt/release/$S_NAME.conf" \
     && sed -e 's|release/bin/s|release/bin/'"$S_NAME"'|' -i "/etc/supervisord.d/supervisord-s.conf" \
     && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/unreleased/glibc-2.25-r1.apk \
