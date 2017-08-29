@@ -53,12 +53,17 @@ RUN bash -c 'for i in $(find /opt/confluent/bin-install); do ln -s $i /usr/local
     && ln -s kafka-run-class kafka-run-class.sh
 
 # Configure Confluent
+# Allow CORS
+# For brokers: 2MB/sec prod/cons quotas, 3 partitions, 2 days, 128MB per partition, 32MB per segment
 RUN echo "access.control.allow.methods=GET,POST,PUT,DELETE,OPTIONS" >> /opt/confluent/etc/schema-registry/schema-registry.properties \
     && echo 'access.control.allow.origin=*' >> /opt/confluent/etc/schema-registry/schema-registry.properties \
     && echo "access.control.allow.methods=GET,POST,PUT,DELETE,OPTIONS" >> /opt/confluent/etc/kafka-rest/kafka-rest.properties \
     && echo 'access.control.allow.origin=*' >> /opt/confluent/etc/kafka-rest/kafka-rest.properties \
     && echo "access.control.allow.methods=GET,POST,PUT,DELETE,OPTIONS" >> /opt/confluent/etc/schema-registry/connect-avro-distributed.properties \
-    && echo 'access.control.allow.origin=*' >> /opt/confluent/etc/schema-registry/connect-avro-distributed.properties
+    && echo 'access.control.allow.origin=*' >> /opt/confluent/etc/schema-registry/connect-avro-distributed.properties \
+    && echo -e \
+         'quota.consumer.default=2097152\nquota.producer.default=2097152\nnum.partitions=3\nlog.retention.bytes=134217728\nsegment.bytes=33554432\nlog.retention.hours=48' \
+         >> /opt/confluent/etc/kafka/server.properties
 
 # # Add and setup Kafka Manager
 # RUN wget https://archive.landoop.com/third-party/kafka-manager/kafka-manager-1.3.2.1.zip \
