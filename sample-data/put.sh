@@ -2,46 +2,55 @@
 
 pushd /usr/share/landoop/sample-data
 
-TOPICS=(sea_vessel_position_reports reddit_posts nyc_yellow_taxi_trip_data)
-PARTITIONS=(3 5 1)
-DATA=(ais.txt.gz reddit.may2015.30k.wkey.json.xz yellow_tripdata_2016-Jan_May.100k.json.xz)
-VALUES=(classAPositionReportSchema.json reddit.value.json nyc_trip_records_yellow.value.json)
-KEYS=(classAPositionReportSchemaKey.json reddit.key.json)
-COMPRESSION=(uncompressed lz4 gzip)
+# shellcheck source=variables.env
+source variables.env
 
 # Create Topics
-for key in 0 1 2; do
+for key in 0 1 2 3; do
     # Create topic with x partitions and a retention time of 10 years.
     kafka-topics \
         --zookeeper localhost:2181 \
-        --topic ${TOPICS[key]} \
-        --partitions ${PARTITIONS[key]} \
+        --topic "${TOPICS[key]}" \
+        --partitions "${PARTITIONS[key]}" \
         --replication-factor 1 \
         --config retention.ms=315576000000 \
-        --config compression.type=${COMPRESSION[key]} \
+        --config "compression.type=${COMPRESSION[key]}" \
         --create
 done
 
 # Insert data with keys
 for key in 0 1; do
-    /usr/local/bin/normcat ${DATA[key]} | \
+    /usr/local/bin/normcat "${DATA[key]}" | \
         kafka-avro-console-producer \
             --broker-list localhost:9092 \
-            --topic ${TOPICS[key]} \
+            --topic "${TOPICS[key]}" \
             --property parse.key=true \
-            --property key.schema="$(cat ${KEYS[key]})" \
-            --property value.schema="$(cat ${VALUES[key]})" \
+            --property key.schema="$(cat "${KEYS[key]}")" \
+            --property value.schema="$(cat "${VALUES[key]}")" \
             --property schema.registry.url=http://localhost:8081
 done
 
 # Insert data without keys
+# shellcheck disable=SC2043
 for key in 2; do
-    /usr/local/bin/normcat ${DATA[key]} | \
+    /usr/local/bin/normcat "${DATA[key]}" | \
         kafka-avro-console-producer \
             --broker-list localhost:9092 \
-            --topic ${TOPICS[key]} \
-            --property value.schema="$(cat ${VALUES[key]})" \
+            --topic "${TOPICS[key]}" \
+            --property value.schema="$(cat "${VALUES[key]}")" \
             --property schema.registry.url=http://localhost:8081
+done
+
+# Insert json data with text keys converted to json keys
+# shellcheck disable=SC2043
+for key in 3; do
+    /usr/local/bin/normcat "${DATA[key]}" | \
+        sed -r -e 's/([A-Z0-9-]*):/{"model":"\1"}#/' | \
+        kafka-console-producer \
+            --broker-list localhost:9092 \
+            --topic "${TOPICS[key]}" \
+            --property parse.key=true \
+            --property "key.separator=#"
 done
 
 popd
