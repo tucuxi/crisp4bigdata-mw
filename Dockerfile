@@ -145,9 +145,9 @@ ARG KAFKA_LENSES
 ARG KAFKA_LENSES_LICENSE
 ARG KAFKA_LENSES_CONF
 RUN mkdir -p /opt/kafka-lenses \
-    && wget "$KAFKA_LENSES" -O /opt/kafka-lenses/kafka-lenses.jar \
-    && wget "$KAFKA_LENSES_LICENSE" -O /opt/kafka-lenses/license.json \
-    && wget "$KAFKA_LENSES_CONF" -O /opt/kafka-lenses/lenses.conf
+    && [[ ! -z "$KAFKA_LENSES" ]] && wget "$KAFKA_LENSES" -O /opt/kafka-lenses/kafka-lenses.jar || true \
+    ;  [[ ! -z "$KAFKA_LENSES_LICENSE" ]] && wget "$KAFKA_LENSES_LICENSE" -O /opt/kafka-lenses/license.json || true \
+    ;  [[ ! -z "$KAFKA_LENSES_CONF" ]] && wget "$KAFKA_LENSES_CONF" -O /opt/kafka-lenses/lenses.conf || true
 
 ARG BUILD_BRANCH
 ARG BUILD_COMMIT

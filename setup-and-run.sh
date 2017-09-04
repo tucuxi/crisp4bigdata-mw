@@ -34,12 +34,14 @@ fi
 
 # Adjust custom ports
 
-## Some basic replacements
+# Some basic replacements. Lenses conf may be provided by outside, so...
 sed -e 's/2181/'"$ZK_PORT"'/' -e 's/8081/'"$REGISTRY_PORT"'/' -e 's/9092/'"$BROKER_PORT"'/' -i \
     /opt/confluent/etc/kafka/zookeeper.properties \
     /opt/confluent/etc/kafka/server.properties \
     /opt/confluent/etc/schema-registry/schema-registry.properties \
-    /opt/confluent/etc/schema-registry/connect-avro-distributed.properties \
+    /opt/confluent/etc/schema-registry/connect-avro-distributed.properties
+chown root:root /opt/kafka-lenses/lenses.conf
+sed -e 's/2181/'"$ZK_PORT"'/' -e 's/8081/'"$REGISTRY_PORT"'/' -e 's/9092/'"$BROKER_PORT"'/' -i \
     /opt/kafka-lenses/lenses.conf
 
 ## Broker specific
@@ -78,8 +80,11 @@ sed -e 's/3031/'"$WEB_PORT"'/' -e 's/2181/'"$ZK_PORT"'/' -e 's/9092/'"$BROKER_PO
     -i /usr/share/landoop/Caddyfile \
        /var/www/env.js \
        /usr/share/landoop/kafka-tests.yml \
-       /usr/local/bin/logs-to-kafka.sh \
-       /opt/kafka-lenses/lenses.conf
+       /usr/local/bin/logs-to-kafka.sh
+sed -e 's/3031/'"$WEB_PORT"'/' -e 's/2181/'"$ZK_PORT"'/' -e 's/9092/'"$BROKER_PORT"'/' \
+    -e 's/8081/'"$REGISTRY_PORT"'/' -e 's/8082/'"$REST_PORT"'/' -e 's/8083/'"$CONNECT_PORT"'/' \
+    -e 's/3030/'"$KAFKA_LENSES_PORT"'/' \
+    -i /opt/kafka-lenses/lenses.conf
 
 # Allow for topic deletion by default, unless TOPIC_DELETE is set
 if echo "$TOPIC_DELETE" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
