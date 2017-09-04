@@ -45,6 +45,9 @@ RUN wget "${STREAM_REACTOR_URL}" -O stream-reactor.tar.gz \
     && rm -rf /elasticsearch-2.4.1* \
     && echo "plugin.path=/opt/connectors,/extra-connect-jars,/connectors" >> /opt/confluent/etc/schema-registry/connect-avro-distributed.properties
 
+#ADD lenses-interceptor-1.0.jar /extra-connect-jars/
+ADD /kafka-lenses/ /kafka-lenses/
+
 # Create system symlinks to Confluent's binaries
 ADD binaries /opt/confluent/bin-install
 RUN bash -c 'for i in $(find /opt/confluent/bin-install); do ln -s $i /usr/local/bin/$(echo $i | sed -e "s>.*/>>"); done' \
@@ -82,39 +85,6 @@ RUN wget https://github.com/Landoop/coyote/releases/download/v1.1/coyote-1.1-lin
     && chmod +x /usr/local/bin/coyote /usr/local/bin/smoke-tests.sh \
     && mkdir -p /var/www/coyote-tests
 ADD integration-tests/index.html integration-tests/results /var/www/coyote-tests/
-
-# Add and Setup Schema-Registry-Ui
-ARG SCHEMA_REGISTRY_UI_URL="https://github.com/Landoop/schema-registry-ui/releases/download/v.0.9.1/schema-registry-ui-0.9.1.tar.gz"
-RUN wget "$SCHEMA_REGISTRY_UI_URL" -O /schema-registry-ui.tar.gz \
-    && mkdir -p /var/www/schema-registry-ui \
-    && tar xzf /schema-registry-ui.tar.gz -C /var/www/schema-registry-ui \
-    && rm -f /schema-registry-ui.tar.gz
-COPY web/registry-ui-env.js /var/www/schema-registry-ui/env.js
-
-# Add and Setup Kafka-Topics-Ui
-ARG KAFKA_TOPICS_UI_URL="https://github.com/Landoop/kafka-topics-ui/releases/download/v0.9.2/kafka-topics-ui-0.9.2.tar.gz"
-RUN wget "$KAFKA_TOPICS_UI_URL" -O /kafka-topics-ui.tar.gz \
-    && mkdir /var/www/kafka-topics-ui \
-    && tar xzf /kafka-topics-ui.tar.gz -C /var/www/kafka-topics-ui \
-    && rm -f /kafka-topics-ui.tar.gz
-COPY web/topics-ui-env.js /var/www/kafka-topics-ui/env.js
-
-# Add and Setup Kafka-Connect-UI
-ARG KAFKA_CONNECT_UI_URL="https://github.com/Landoop/kafka-connect-ui/releases/download/v.0.9.2/kafka-connect-ui-0.9.2.tar.gz"
-RUN wget "$KAFKA_CONNECT_UI_URL" -O /kafka-connect-ui.tar.gz \
-    && mkdir /var/www/kafka-connect-ui \
-    && tar xzf /kafka-connect-ui.tar.gz -C /var/www/kafka-connect-ui \
-    && rm -f /kafka-connect-ui.tar.gz
-COPY web/connect-ui-env.js /var/www/kafka-connect-ui/env.js
-
-# Add and setup Caddy Server
-ARG CADDY_URL=https://github.com/mholt/caddy/releases/download/v0.9.5/caddy_linux_amd64.tar.gz
-RUN wget "$CADDY_URL" -O /caddy.tgz \
-    && mkdir -p /opt/caddy \
-    && tar xzf /caddy.tgz -C /opt/caddy \
-    && mv /opt/caddy/caddy_linux_amd64 /opt/caddy/caddy \
-    && rm -f /caddy.tgz
-ADD web/Caddyfile /usr/share/landoop
 
 # Add fast-data-dev UI
 COPY web/index.html web/env.js web/env-webonly.js /var/www/

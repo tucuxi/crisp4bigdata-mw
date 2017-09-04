@@ -28,17 +28,20 @@ PORTS="$ZK_PORT $BROKER_PORT $REGISTRY_PORT $REST_PORT $CONNECT_PORT $WEB_PORT $
 USER="${USER:-kafka}"
 if [[ ! -z "$PASSWORD" ]]; then
     echo -e "\e[92mEnabling login credentials '\e[96m${USER}\e[34m\e[92m' '\e[96m${PASSWORD}'\e[34m\e[92m.\e[34m"
-    echo "basicauth / \"${USER}\" \"${PASSWORD}\"" >> /usr/share/landoop/Caddyfile
+    #echo "basicauth / \"${USER}\" \"${PASSWORD}\"" >> /usr/share/landoop/Caddyfile
 fi
 
 # Adjust custom ports
 
 ## Some basic replacements
-sed -e 's/2181/'"$ZK_PORT"'/' -e 's/8081/'"$REGISTRY_PORT"'/' -e 's/9092/'"$BROKER_PORT"'/' -i \
+sed -e 's/2181/'"$ZK_PORT"'/' -e 's/8081/'"$REGISTRY_PORT"'/' -e 's/9092/'"$BROKER_PORT"'/' \
+    -e 's/9581/'"$BROKER_JMX_PORT"'/' -e 's/9582/'"$REGISTRY_JMX_PORT"'/' -e 's/9583/'"$REST_JMX_PORT"'/' \
+    -e 's/9584/'"$CONNECT_JMX_PORT"'/' -e 's/9585/'"$ZK_JMX_PORT"'/' -i \
     /opt/confluent/etc/kafka/zookeeper.properties \
     /opt/confluent/etc/kafka/server.properties \
     /opt/confluent/etc/schema-registry/schema-registry.properties \
-    /opt/confluent/etc/schema-registry/connect-avro-distributed.properties
+    /opt/confluent/etc/schema-registry/connect-avro-distributed.properties \
+    /kafka-lenses/lenses.conf
 
 ## Broker specific
 cat <<EOF >>/opt/confluent/etc/kafka/server.properties
@@ -63,17 +66,19 @@ zookeeper.connect=localhost:$ZK_PORT
 consumer.request.timeout.ms=30000
 EOF
 
-## Schema Registry specific
+## Schema Registry specific and interceptors
 cat <<EOF >>/opt/confluent/etc/schema-registry/connect-avro-distributed.properties
 
 rest.port=$CONNECT_PORT
+
+consumer.interceptor.classes=com.landoop.kafka.interceptors.Consumer
+producer.interceptor.classes=com.landoop.kafka.interceptors.Producer
 EOF
 
-## Other infra specific (caddy, web ui, tests, logs)
+## Other infra specific (web ui, tests, logs)
 sed -e 's/3030/'"$WEB_PORT"'/' -e 's/2181/'"$ZK_PORT"'/' -e 's/9092/'"$BROKER_PORT"'/' \
     -e 's/8081/'"$REGISTRY_PORT"'/' -e 's/8082/'"$REST_PORT"'/' -e 's/8083/'"$CONNECT_PORT"'/' \
-    -i /usr/share/landoop/Caddyfile \
-       /var/www/env.js \
+    -i /var/www/env.js \
        /usr/share/landoop/kafka-tests.yml \
        /usr/local/bin/logs-to-kafka.sh
 

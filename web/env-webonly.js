@@ -45,7 +45,7 @@ var servicesInfo = [
     "url"  : "localhost"
   },
   {
-    "name" : "Web Server",
+    "name" : "Kafka Lenses",
     "port" : "3030",
     "jmx"  : "",
     "url"  : "http://localhost"
