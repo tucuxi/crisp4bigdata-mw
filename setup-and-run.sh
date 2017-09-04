@@ -6,8 +6,8 @@ BROKER_SSL_PORT="${BROKER_SSL_PORT:-9093}"
 REGISTRY_PORT="${REGISTRY_PORT:-8081}"
 REST_PORT="${REST_PORT:-8082}"
 CONNECT_PORT="${CONNECT_PORT:-8083}"
-WEB_PORT="${WEB_PORT:-3030}"
-#KAFKA_MANAGER_PORT="3031"
+WEB_PORT="${WEB_PORT:-3031}"
+KAFKA_LENSES_PORT="3030"
 RUN_AS_ROOT="${RUN_AS_ROOT:false}"
 ZK_JMX_PORT="9585"
 BROKER_JMX_PORT="9581"
@@ -21,6 +21,7 @@ DEBUG="${DEBUG:-false}"
 TOPIC_DELETE="${TOPIC_DELETE:-true}"
 SAMPLEDATA="${SAMPLEDATA:-0}"
 RUNNING_SAMPLEDATA="${RUNNING_SAMPLEDATA:-1}"
+ENABLE_KAFKAREST="${ENABLE_KAFKAREST:-0}"
 
 PORTS="$ZK_PORT $BROKER_PORT $REGISTRY_PORT $REST_PORT $CONNECT_PORT $WEB_PORT $KAFKA_MANAGER_PORT"
 
@@ -38,7 +39,8 @@ sed -e 's/2181/'"$ZK_PORT"'/' -e 's/8081/'"$REGISTRY_PORT"'/' -e 's/9092/'"$BROK
     /opt/confluent/etc/kafka/zookeeper.properties \
     /opt/confluent/etc/kafka/server.properties \
     /opt/confluent/etc/schema-registry/schema-registry.properties \
-    /opt/confluent/etc/schema-registry/connect-avro-distributed.properties
+    /opt/confluent/etc/schema-registry/connect-avro-distributed.properties \
+    /opt/kafka-lenses/lenses.conf
 
 ## Broker specific
 cat <<EOF >>/opt/confluent/etc/kafka/server.properties
@@ -70,12 +72,14 @@ rest.port=$CONNECT_PORT
 EOF
 
 ## Other infra specific (caddy, web ui, tests, logs)
-sed -e 's/3030/'"$WEB_PORT"'/' -e 's/2181/'"$ZK_PORT"'/' -e 's/9092/'"$BROKER_PORT"'/' \
+sed -e 's/3031/'"$WEB_PORT"'/' -e 's/2181/'"$ZK_PORT"'/' -e 's/9092/'"$BROKER_PORT"'/' \
     -e 's/8081/'"$REGISTRY_PORT"'/' -e 's/8082/'"$REST_PORT"'/' -e 's/8083/'"$CONNECT_PORT"'/' \
+    -e 's/3030/'"$KAFKA_LENSES_PORT"'/' \
     -i /usr/share/landoop/Caddyfile \
        /var/www/env.js \
        /usr/share/landoop/kafka-tests.yml \
-       /usr/local/bin/logs-to-kafka.sh
+       /usr/local/bin/logs-to-kafka.sh \
+       /opt/kafka-lenses/lenses.conf
 
 # Allow for topic deletion by default, unless TOPIC_DELETE is set
 if echo "$TOPIC_DELETE" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
@@ -109,7 +113,7 @@ if [[ ! -z "${ADV_HOST}" ]]; then
          >> /opt/confluent/etc/kafka/server.properties
     echo -e "\nrest.advertised.host.name=${ADV_HOST}" \
          >> /opt/confluent/etc/schema-registry/connect-avro-distributed.properties
-    sed -e 's#localhost#'"${ADV_HOST}"'#g' -i /usr/share/landoop/kafka-tests.yml /var/www/env.js /etc/supervisord.conf
+    sed -e 's#localhost#'"${ADV_HOST}"'#g' -i /usr/share/landoop/kafka-tests.yml /var/www/env.js /etc/supervisord.d/*
 fi
 
 # Configure JMX if needed or disable it.
@@ -117,19 +121,19 @@ if ! echo "$DISABLE_JMX" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
     PORTS="$PORTS $BROKER_JMX_PORT $REGISTRY_JMX_PORT $REST_JMX_PORT $CONNECT_JMX_PORT $ZK_JMX_PORT"
     sed -r -e 's/^;(environment=JMX_PORT)/\1/' \
         -e 's/^environment=VCON=1,KAFKA_HEAP_OPTS/environment=JMX_PORT='"$CONNECT_JMX_PORT"',KAFKA_HEAP_OPTS/' \
-        -i /etc/supervisord.conf
+        -i /etc/supervisord.d/*
 else
     sed -r -e 's/,KAFKA_JMX_OPTS="[^"]*"//' \
         -e 's/,SCHEMA_REGISTRY_JMX_OPTS="[^"]*"//' \
         -e 's/,KAFKAREST_JMX_OPTS="[^"]*"//' \
-        -i /etc/supervisord.conf
+        -i /etc/supervisord.d/*
     sed -e 's/"jmx"\s*:[^,]*/"jmx"  : ""/' \
         -i /var/www/env.js
 fi
 
 # Enable root-mode if needed
 if grep -sqE "true|TRUE|y|Y|yes|YES|1" <<<"$RUN_AS_ROOT" ; then
-    sed -e 's/user=nobody/;user=nobody/' -i /etc/supervisord.conf
+    sed -e 's/user=nobody/;user=nobody/' -i /etc/supervisord.d/*
     echo -e "\e[92mRunning Kafka as root.\e[34m"
 fi
 
@@ -209,13 +213,18 @@ fi
 if echo "$WEB_ONLY" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
     PORTS="$WEB_PORT"
     echo -e "\e[92mWeb only mode. Kafka services will be disabled.\e[39m"
-    cp /usr/share/landoop/supervisord-web-only.conf /etc/supervisord.conf
+    cp /usr/share/landoop/supervisord-web-only.conf /etc/supervisord.d/*
     cp /var/www/env-webonly.js /var/www/env.js
+fi
+
+# Disable Kafka REST if not explicitly set:
+if ! echo "$ENABLE_KAFKAREST" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
+    rm /etc/supervisord.d/*rest-proxy.conf
 fi
 
 # Set supervisord to output all logs to stdout
 if echo "$DEBUG" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
-    sed -e 's/loglevel=info/loglevel=debug/' -i /etc/supervisord.conf
+    sed -e 's/loglevel=info/loglevel=debug/' -i /etc/supervisord.d/*
 fi
 
 # Check for port availability
@@ -263,15 +272,15 @@ echo -e "\e[34mYou may visit \e[96mhttp://${PRINT_HOST}:${WEB_PORT}\e[34m in abo
 
 # Set connect heap size if needed
 CONNECT_HEAP="${CONNECT_HEAP:-1G}"
-sed -e 's|{{CONNECT_HEAP}}|'"${CONNECT_HEAP}"'|' -i /etc/supervisord.conf
+sed -e 's|{{CONNECT_HEAP}}|'"${CONNECT_HEAP}"'|' -i /etc/supervisord.d/*.conf
 
 # Set sample data if needed
 if echo "$RUNNING_SAMPLEDATA" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
-    cp /usr/share/landoop/supervisord-running-sample-data.conf /etc/supervisord.d/
+    cp /usr/share/landoop/99-supervisord-running-sample-data.conf /etc/supervisord.d/
 elif echo "$SAMPLEDATA" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
     # This should be added only if we don't have running data, because it sets
     # retention period to 10 years (as the data is so few in this case).
-    cp /usr/share/landoop/supervisord-sample-data.conf /etc/supervisord.d/
+    cp /usr/share/landoop/99-supervisord-sample-data.conf /etc/supervisord.d/
 fi
 
 exec /usr/bin/supervisord -c /etc/supervisord.conf

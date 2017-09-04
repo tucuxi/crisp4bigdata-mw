@@ -64,33 +64,10 @@ RUN echo "access.control.allow.methods=GET,POST,PUT,DELETE,OPTIONS" >> /opt/conf
          'quota.consumer.default=2097152\nquota.producer.default=2097152\nnum.partitions=3\nlog.retention.bytes=134217728\nsegment.bytes=33554432\nlog.retention.hours=48' \
          >> /opt/confluent/etc/kafka/server.properties
 
-# # Add and setup Kafka Manager
-# RUN wget https://archive.landoop.com/third-party/kafka-manager/kafka-manager-1.3.2.1.zip \
-#          -O /kafka-manager-1.3.2.1.zip \
-#     && unzip /kafka-manager-1.3.2.1.zip -d /opt \
-#     && rm -rf /kafka-manager-1.3.2.1.zip
-
 # # Add Twitter Connector
 # ARG TWITTER_CONNECTOR_URL="https://archive.landoop.com/third-party/kafka-connect-twitter/kafka-connect-twitter-0.1-master-af63e4c-cp3.2.2-jar-with-dependencies.jar"
 # RUN mkdir -p /opt/confluent/share/java/kafka-connect-twitter \
 #     && wget "$TWITTER_CONNECTOR_URL" -P /opt/confluent/share/java/kafka-connect-twitter
-
-# Add S
-ARG S_URL
-ARG S_NAME
-RUN wget "$S_URL" -O /s.tgz \
-    && tar xf s.tgz -C /opt \
-    && rm /s.tgz
-ADD extras/supervisord-s.conf /etc/supervisord.d/
-ARG FDD_URL="http://localhost:3030"
-RUN sed -e 's|http://192\.168\.99\.100:8081|'"$FDD_URL"'/api/schema-registry|' \
-        -e 's|http://192\.168\.99\.100:8083|'"$FDD_URL"'/api/kafka-connect|'  \
-        -e 's/192\.168\.99\.100/127.0.0.1/g' -i "/opt/release/$S_NAME.conf" \
-    && sed -e 's|release/bin/s|release/bin/'"$S_NAME"'|' -i "/etc/supervisord.d/supervisord-s.conf" \
-    && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/unreleased/glibc-2.25-r1.apk \
-    && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/unreleased/glibc-bin-2.25-r1.apk \
-    && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/unreleased/glibc-i18n-2.25-r1.apk \
-    &&  apk add --no-cache --allow-untrusted glibc-2.25-r1.apk glibc-bin-2.25-r1.apk glibc-i18n-2.25-r1.apk
 
 # Add dumb init and quickcert
 RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 -O /usr/local/bin/dumb-init \
@@ -153,10 +130,24 @@ COPY sample-data /usr/share/landoop/sample-data
 # Add executables, settings and configuration
 ADD extras/ /usr/share/landoop/
 ADD supervisord.conf /etc/supervisord.conf
+ADD supervisord.d/* /etc/supervisord.d/
 ADD setup-and-run.sh logs-to-kafka.sh /usr/local/bin/
 ADD https://github.com/Landoop/kafka-autocomplete/releases/download/0.2/kafka /usr/share/landoop/kafka-completion
 RUN chmod +x /usr/local/bin/setup-and-run.sh /usr/local/bin/logs-to-kafka.sh \
     && ln -s /usr/share/landoop/bashrc /root/.bashrc
+
+# Add Kafka Lenses
+RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/unreleased/glibc-2.25-r1.apk \
+    && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/unreleased/glibc-bin-2.25-r1.apk \
+    && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/unreleased/glibc-i18n-2.25-r1.apk \
+    &&  apk add --no-cache --allow-untrusted glibc-2.25-r1.apk glibc-bin-2.25-r1.apk glibc-i18n-2.25-r1.apk
+ARG KAFKA_LENSES
+ARG KAFKA_LENSES_LICENSE
+ARG KAFKA_LENSES_CONF
+RUN mkdir -p /opt/kafka-lenses \
+    && wget "$KAFKA_LENSES" -O /opt/kafka-lenses/kafka-lenses.jar \
+    && wget "$KAFKA_LENSES_LICENSE" -O /opt/kafka-lenses/license.json \
+    && wget "$KAFKA_LENSES_CONF" -O /opt/kafka-lenses/lenses.conf
 
 ARG BUILD_BRANCH
 ARG BUILD_COMMIT
