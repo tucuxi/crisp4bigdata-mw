@@ -15,12 +15,13 @@ REGISTRY_JMX_PORT="9582"
 REST_JMX_PORT="9583"
 CONNECT_JMX_PORT="9584"
 DISABLE_JMX="${DISABLE_JMX:false}"
-ENABLE_SSL="${ENABLE_SSL:false}"
+ENABLE_SSL="${ENABLE_SSL:-true}"
 SSL_EXTRA_HOSTS="${SSL_EXTRA_HOSTS:-}"
 DEBUG="${DEBUG:-false}"
 TOPIC_DELETE="${TOPIC_DELETE:-true}"
 SAMPLEDATA="${SAMPLEDATA:-1}"
-RUNNING_SAMPLEDATA="${RUNNING_SAMPLEDATA:-0}"
+RUNNING_SAMPLEDATA="${RUNNING_SAMPLEDATA:-1}"
+SECOND_BROKER="${SECOND_BROKER:-1}"
 
 PORTS="$ZK_PORT $BROKER_PORT $REGISTRY_PORT $REST_PORT $CONNECT_PORT $WEB_PORT $KAFKA_MANAGER_PORT"
 
@@ -272,6 +273,22 @@ elif echo "$SAMPLEDATA" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
     # This should be added only if we don't have running data, because it sets
     # retention period to 10 years (as the data is so few in this case).
     cp /usr/share/landoop/99-supervisord-sample-data.conf /etc/supervisord.d/
+fi
+
+# Set second broker if needed
+if echo "$SECOND_BROKER" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
+    sed -e 's/port=/port=1/' \
+        -e 's/PORT=/PORT=1/' \
+        -e 's/server\.properties/server-b.properties/' \
+        -e 's/broker/broker2/' \
+        /etc/supervisord.d/02-broker.conf > /etc/supervisord.d/02-broker-b.conf
+    sed -r -e 's/:('"$BROKER_PORT"')/:1\1/g' \
+        -e 's/:('"$BROKER_SSL_PORT"')/:1\1/g' \
+        -e 's/kafka-logs/kafka-logs2/' \
+        /opt/confluent/etc/kafka/server.properties > /opt/confluent/etc/kafka/server-b.properties
+
+    echo "broker.id=1" >> /opt/confluent/etc/kafka/server.properties
+    echo "broker.id=2" >> /opt/confluent/etc/kafka/server-b.properties
 fi
 
 exec /usr/bin/supervisord -c /etc/supervisord.conf
