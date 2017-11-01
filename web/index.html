@@ -31,21 +31,38 @@
    .important-message code { background-color: #FCFCFC; }
    .fdd-head h3 code a, a:active, a:visited a:hover { text-decoration: none; color: #2a3b4d; font-size: 14px;}
    .fdd-head h3 code { font-size: 14px;}
+   .md-card { box-shadow: none;}
   </style>
 </head>
 
 <body ng-app="DockerPage" ng-cloak>
 
-<div ng-controller="MainCtrl" style="background-color: #F5F5F5;">
+<div ng-controller="MainCtrl" style="background-color: rgba(230, 229, 229, 0.64);">
 <!--Header-->
-<div flex layout="row" layout-xs="column">
-  <div flex="20"></div>
-  <div flex="60" class="fdd-head">
-    <h3> <img ng-src="img/landoop-blue.svg" style="width:45px; float:left; padding-right:5px;">
-        Kafka Development Environment<br/>
-        <code>docker container powered by <a href="https://www.landoop.com">Landoop</a></code>
-    </h3>
-  </div>
+<div flex="" layout="row" layout-xs="column" class="layout-xs-column layout-row flex" style="background: #292E36;">
+    <div flex="20" class="flex-20"></div>
+    <div flex="60" class="fdd-head flex-60">
+        <h4 style="color: #fff;letter-spacing: 1px;font-size:14px;padding-left: 10px;margin-top:10px" class="">
+            <b>FAST-DATA-DEV</b> <br>
+            <span style="color:font-weight:400;opacity:.7;font-size:12px;text-transform:uppercase;letter-spacing: 1.2px;"> KAFKA DEVELOPMENT ENVIRONMENT</span>
+        </h4>
+    </div>
+</div>
+
+<div flex="" layout="row" layout-xs="column" class="layout-xs-column layout-row flex">
+    <div flex="20" class="flex-20"></div>
+    <div flex="60" class="flex-60" style="">
+        <md-card class="_md" style="">
+            <md-card-content>
+                <div flex="100" class="flex-100" layout-align="center center">
+                    <img src="img/lenses-banner.png" style="width: 100%;">
+                    <a class="md-raised md-button md-ink-ripple" type="button" ng-transclude="" ng-href="http://www.landoop.com/downloads/lenses/" target="_blank" style="background-color: #e45553;color: white;">
+                        Download Lenses
+                    </a>
+                </div>
+            </md-card-content>
+        </md-card>
+    </div>
 </div>
 
 <!--summaries-->
@@ -60,7 +77,7 @@
       <!--Schemas-->
       <div flex id="schema-registry">
         <a href="./schema-registry-ui/" class="card-link">
-          <md-card style="background-color: #2196F3; color: #fff; ">
+          <md-card style="background-color: #d2d2d2; color: #696969; ">
             <md-card-title style="padding-bottom:5px;">
               <md-card-title-text>
                 <span class="md-headline tile-heading ">SCHEMAS</span>
@@ -85,7 +102,7 @@
 
       <!--Topics-->
       <div flex>
-        <md-card style="background-color: #7C4DFF; color: #fff; ">
+        <md-card style="background-color: #d2d2d2; color: #696969;">
           <md-card-title style="padding-bottom:5px;">
             <md-card-title-text>
               <span class="md-headline tile-heading ">TOPICS</span>
@@ -108,7 +125,7 @@
 
       <!--Connectors-->
       <div flex>
-        <md-card style="background-color: #AD1457; color: #fff; ">
+        <md-card style="background-color: #d2d2d2; color: #696969; ">
           <md-card-title style="padding-bottom:5px;">
             <md-card-title-text>
               <span class="md-headline tile-heading ">CONNECTORS</span>
@@ -131,7 +148,7 @@
 
       <!--Brokers-->
       <div flex>
-        <md-card style="background-color: #00BCD4; color: #fff; ">
+        <md-card style="background-color: #d2d2d2; color: #696969; ">
           <md-card-title style="padding-bottom:5px;">
             <md-card-title-text>
               <span class="md-headline tile-heading ">Brokers</span>
@@ -147,7 +164,7 @@
           <md-card-actions layout="column" layout-align="end center" style="background-color:#fff;color:#333;margin:0px;">
             <div class="summary-title">Kafka brokers</div>
             <div class="summary">management and monitoring</div>
-            <md-button class="md-primary summary" style="margin:5px;color:#558B2F;">Coming soon</md-button>
+            <md-button class="md-primary summary" style="margin:5px;color:#558B2F;" ng-href="http://www.landoop.com/downloads/lenses/" target="_blank">Discover Lenses</md-button>
           </md-card-actions>
         </md-card>
       </div>
@@ -164,19 +181,15 @@
 
     <!--Running Services card-->
     <md-card>
-      <md-card-header style="border-bottom:1px solid #ccc;">
-        <md-card-avatar>
-          <img src="img/docker.png"/>
-        </md-card-avatar>
+      <md-card-header>
         <md-card-header-text>
-          <span class="md-headline tile-heading" style="text-align:left;"><b>RUNNING SERVICES</b></span>
-          <span class="md-subhead"><code> fast-data-dev</code></span>
+          <span class="md-headline tile-heading" style="text-align:center;"><b>RUNNING SERVICES</b></span>
         </md-card-header-text>
       </md-card-header>
       <md-card-content>
         <md-list>
           <md-list-item ng-repeat="service in runningServices" class="md-2-line md-long-text" style="margin:-0.4em;">
-            <img src="img/ok.png" class="md-avatar" style="margin-top:10px;margin-bottom:6px; width:20px; height:20px;"  />
+            <img src="img/ok.png" class="md-avatar" style="margin-top:10px;margin-bottom:6px; width:15px; height:15px;"  />
             <div class="md-list-item-text" style="margin-top:8px;margin-bottom:8px;">
               <h4>{{service.name}}</h4>
               <p style="font-size:12px;">{{service.description}}</p>
