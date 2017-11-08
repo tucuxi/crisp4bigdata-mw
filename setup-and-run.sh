@@ -253,25 +253,40 @@ else
         echo -e "recommended of \e[93m${RAREC} MiB\e[91m. Your system performance may be seriously impacted.\e[39m"
     fi
 fi
+# Check for Available Disk
+DAM="$(df /tmp --output=avail -BM | tail -n1 | sed -r -e 's/M//' -e 's/[ ]*([0-9]+)[ ]*/\1/')"
+if [[ -z "$DAM" ]] || ! [[ "$DAM" =~ ^[0-9]+$ ]]; then
+    echo -e "\e[91mCould not detect available Disk space."
+    echo -e "\e[91mPlease make sure you have the recommended minimum of \e[93m256 MiB\e[91m disk space available for '/tmp' directory.\e[39m"
+else
+    DAREC=256
+    if [[ "$DAM" -lt $DAREC ]]; then
+        echo -e "\e[91mDisk space available for the '/tmp' directory is just \e[93m${DAM} MiB\e[91m which is less than the lowest"
+        echo -e "recommended of \e[93m${DAREC} MiB\e[91m. The container’s services may fail to start.\e[39m"
+    fi
+fi
 
 PRINT_HOST="${ADV_HOST:-localhost}"
 # shellcheck disable=SC1091
 [[ -f /build.info ]] && source /build.info
 echo -e "\e[92mStarting services.\e[39m"
 echo -e "\e[92mThis is landoop’s fast-data-dev. Kafka $KAFKA_VERSION, Confluent OSS $CP_VERSION.\e[39m"
-echo -e "\e[34mYou may visit \e[96mhttp://${PRINT_HOST}:${WEB_PORT}\e[34m in about a minute.\e[39m"
+echo -e "\e[34mYou may visit \e[96mhttp://${PRINT_HOST}:${WEB_PORT}\e[34m in about \e[96ma minute\e[34m.\e[39m"
 
 # Set connect heap size if needed
 CONNECT_HEAP="${CONNECT_HEAP:-1G}"
 sed -e 's|{{CONNECT_HEAP}}|'"${CONNECT_HEAP}"'|' -i /etc/supervisord.d/*.conf
 
 # Set sample data if needed
-if echo "$RUNNING_SAMPLEDATA" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
-    cp /usr/share/landoop/99-supervisord-running-sample-data.conf /etc/supervisord.d/
+if echo "$RUNNING_SAMPLEDATA" | grep -sqE "true|TRUE|y|Y|yes|YES|1" && echo "$SAMPLEDATA" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
+        cp /usr/share/landoop/99-supervisord-running-sample-data.conf /etc/supervisord.d/
 elif echo "$SAMPLEDATA" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
     # This should be added only if we don't have running data, because it sets
     # retention period to 10 years (as the data is so few in this case).
     cp /usr/share/landoop/99-supervisord-sample-data.conf /etc/supervisord.d/
+else
+    # If SAMPLEDATA=0 and FORWARDLOGS connector not explicitly requested
+    [[ -z "$FORWARDLOGS" ]] && export FORWARDLOGS=0
 fi
 
 exec /usr/bin/supervisord -c /etc/supervisord.conf

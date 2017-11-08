@@ -17,7 +17,7 @@ RUN apk add --no-cache \
     && wget https://gitlab.com/andmarios/checkport/uploads/3903dcaeae16cd2d6156213d22f23509/checkport -O /usr/local/bin/checkport \
     && chmod +x /usr/local/bin/checkport \
     && mkdir /extra-connect-jars /connectors \
-    && mkdir /etc/supervisord.d
+    && mkdir /etc/supervisord.d /etc/supervisord.templates.d
 
 # Create Landoop configuration directory
 RUN mkdir /usr/share/landoop
@@ -122,7 +122,7 @@ COPY web/img /var/www/img
 RUN ln -s /var/log /var/www/logs
 
 # Add sample data and install normcat
-ARG NORMCAT_URL=https://github.com/andmarios/normcat/releases/download/1.0/normcat-1.0-linux-amd64.tar.gz
+ARG NORMCAT_URL=https://archive.landoop.com/tools/normcat/normcat_lowmem-1.1.1.tgz
 RUN wget "$NORMCAT_URL" -O /normcat.tgz \
     && tar xf /normcat.tgz -C /usr/local/bin \
     && rm /normcat.tgz
@@ -131,11 +131,12 @@ COPY sample-data /usr/share/landoop/sample-data
 # Add executables, settings and configuration
 ADD extras/ /usr/share/landoop/
 ADD supervisord.conf /etc/supervisord.conf
-ADD supervisord.d/* /etc/supervisord.d/
+ADD supervisord.templates.d/* /etc/supervisord.templates.d/
 ADD setup-and-run.sh logs-to-kafka.sh /usr/local/bin/
 ADD https://github.com/Landoop/kafka-autocomplete/releases/download/0.2/kafka /usr/share/landoop/kafka-completion
 RUN chmod +x /usr/local/bin/setup-and-run.sh /usr/local/bin/logs-to-kafka.sh \
-    && ln -s /usr/share/landoop/bashrc /root/.bashrc
+    && ln -s /usr/share/landoop/bashrc /root/.bashrc \
+    && cat /etc/supervisord.templates.d/* > /etc/supervisord.d/01-fast-data.conf
 
 ARG BUILD_BRANCH
 ARG BUILD_COMMIT

@@ -14,7 +14,7 @@ for key in 1; do
         --zookeeper localhost:2181 \
         --topic "${TOPICS[key]}" \
         --partitions "${PARTITIONS[key]}" \
-        --replication-factor 1 \
+        --replication-factor "${REPLICATION[key]}" \
         --config retention.bytes=26214400 \
         --config compression.type="${COMPRESSION[key]}" \
         --config segment.bytes=8388608 \
@@ -25,7 +25,7 @@ done
 # shellcheck disable=SC2043
 for key in 1; do
     /usr/local/bin/normcat -r "${RATES[key]}" -j "${JITTER[key]}" -p "${PERIOD[key]}" -c -v "${DATA[key]}" | \
-        kafka-avro-console-producer \
+        SCHEMA_REGISTRY_HEAP_OPTS="-Xmx50m" kafka-avro-console-producer \
             --broker-list localhost:9092 \
             --topic "${TOPICS[key]}" \
             --property parse.key=true \
