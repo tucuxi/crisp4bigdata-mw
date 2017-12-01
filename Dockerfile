@@ -1,5 +1,7 @@
 FROM alpine
-MAINTAINER Marios Andreopoulos <marios@landoop.com>
+MAINTAINER Klaus-Dieter Schmatz <kschmatz@gmail.com>
+
+# Based on Landoop/fast-data-dev from Marios Andreopoulos <marios@landoop.com>
 
 # Update, install tooling and some basic setup
 RUN apk add --no-cache \
@@ -63,12 +65,6 @@ RUN echo "access.control.allow.methods=GET,POST,PUT,DELETE,OPTIONS" >> /opt/conf
     && echo 'access.control.allow.origin=*' >> /opt/confluent/etc/kafka-rest/kafka-rest.properties \
     && echo "access.control.allow.methods=GET,POST,PUT,DELETE,OPTIONS" >> /opt/confluent/etc/schema-registry/connect-avro-distributed.properties \
     && echo 'access.control.allow.origin=*' >> /opt/confluent/etc/schema-registry/connect-avro-distributed.properties
-
-# # Add and setup Kafka Manager
-# RUN wget https://archive.landoop.com/third-party/kafka-manager/kafka-manager-1.3.2.1.zip \
-#          -O /kafka-manager-1.3.2.1.zip \
-#     && unzip /kafka-manager-1.3.2.1.zip -d /opt \
-#     && rm -rf /kafka-manager-1.3.2.1.zip
 
 # Add Twitter Connector
 ARG TWITTER_CONNECTOR_URL="https://archive.landoop.com/third-party/kafka-connect-twitter/kafka-connect-twitter-0.1-master-af63e4c-cp3.3.0-jar-with-dependencies.jar"
@@ -154,6 +150,6 @@ RUN echo "BUILD_BRANCH=${BUILD_BRANCH}"      | tee /build.info \
     && echo "KAFKA_VERSION=${KAFKA_VERSION}" | tee -a /build.info \
     && echo "CP_VERSION=${CP_VERSION}"       | tee -a /build.info
 
-EXPOSE 2181 3030 3031 8081 8082 8083 9092
+EXPOSE 2181 3030 8081 8082 8083 9092
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["/usr/local/bin/setup-and-run.sh"]
