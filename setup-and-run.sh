@@ -24,7 +24,7 @@ export ZK_PORT BROKER_PORT BROKER_SSL_PORT REGISTRY_PORT REST_PORT CONNECT_PORT 
 export ZK_JMX_PORT BROKER_JMX_PORT REGISTRY_JMX_PORT REST_JMX_PORT CONNECT_JMX_PORT DISABLE_JMX
 export ENABLE_SSL SSL_EXTRA_HOSTS DEBUG TOPIC_DELETE SAMPLEDATA RUNNING_SAMPLEDATA
 
-
+DISABLE="azure-documentdb,blockchain,bloomberg,coap,druid,elastic,elastic5,influxdb,kudu,mqtt,redis,voltdb,yahoo"
 PORTS="$ZK_PORT $BROKER_PORT $REGISTRY_PORT $REST_PORT $CONNECT_PORT $WEB_PORT"
 
 # Set webserver basicauth username and password
@@ -86,14 +86,6 @@ if echo "$TOPIC_DELETE" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
     cat <<EOF >>/opt/confluent/etc/kafka/server.properties
 delete.topic.enable=true
 EOF
-fi
-
-## TODO: deprecate
-# Remove ElasticSearch if needed
-PREFER_HBASE="${PREFER_HBASE:-false}"
-if echo "$PREFER_HBASE" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
-    rm -rf /extra-connect-jars/* /opt/confluent-*/share/java/kafka-connect-elastic*
-    echo -e "\e[92mFixing HBase connector: Removing ElasticSearch and Twitter connector.\e[39m"
 fi
 
 # Disable Connectors
