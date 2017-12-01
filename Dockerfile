@@ -19,7 +19,7 @@ RUN apk add --no-cache \
         supervisor \
         tar \
         wget \
-    && echo "progress = dot:giga" | tee /etc/wgetrc \
+    && echo "verbose = off" > /etc/wgetrc \
     && mkdir /opt \
     && wget https://gitlab.com/andmarios/checkport/uploads/3903dcaeae16cd2d6156213d22f23509/checkport -O /usr/local/bin/checkport \
     && chmod +x /usr/local/bin/checkport \
