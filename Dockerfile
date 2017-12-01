@@ -150,6 +150,6 @@ RUN echo "BUILD_BRANCH=${BUILD_BRANCH}"      | tee /build.info \
     && echo "KAFKA_VERSION=${KAFKA_VERSION}" | tee -a /build.info \
     && echo "CP_VERSION=${CP_VERSION}"       | tee -a /build.info
 
-EXPOSE 2181 3030 8081 8082 8083 9092
+EXPOSE 2181 8080 8081 8082 8083 9092
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["/usr/local/bin/setup-and-run.sh"]
