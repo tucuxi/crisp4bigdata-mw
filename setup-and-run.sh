@@ -24,7 +24,7 @@ export ZK_PORT BROKER_PORT BROKER_SSL_PORT REGISTRY_PORT REST_PORT CONNECT_PORT 
 export ZK_JMX_PORT BROKER_JMX_PORT REGISTRY_JMX_PORT REST_JMX_PORT CONNECT_JMX_PORT DISABLE_JMX
 export ENABLE_SSL SSL_EXTRA_HOSTS DEBUG TOPIC_DELETE SAMPLEDATA RUNNING_SAMPLEDATA
 
-DISABLE="azure-documentdb,blockchain,bloomberg,coap,druid,elastic,elastic5,influxdb,kudu,mqtt,redis,voltdb,yahoo"
+DISABLE="azure-documentdb,blockchain,bloomberg,cassandra,coap,druid,elastic,elastic5,hazelcast,hbase,influxdb,jms,kudu,mongodb,mqtt,redis,rethink,voltdb,yahoo"
 PORTS="$ZK_PORT $BROKER_PORT $REGISTRY_PORT $REST_PORT $CONNECT_PORT $WEB_PORT"
 
 # Set webserver basicauth username and password
