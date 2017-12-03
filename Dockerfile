@@ -1,9 +1,13 @@
+# Dockerfile for mediator-wrapper implementation for CRISP4BigData
+#
+# This image bundles Apache Kafka, Rest Proxy, Schema Registry, Connect,
+# Topics-UI, Schema-Registry-UI, and Connect-UI as well as sample data.
+# It was forked from Landoop/fast-data-dev.
+
 FROM alpine
 MAINTAINER Klaus-Dieter Schmatz <kschmatz@gmail.com>
 
-# Based on Landoop/fast-data-dev from Marios Andreopoulos <marios@landoop.com>
-
-# Update, install tooling and some basic setup
+# Install additional software packages and directory structure
 RUN apk add --no-cache \
         bash \
         bash-completion \
@@ -29,7 +33,7 @@ RUN apk add --no-cache \
 # Create Landoop configuration directory
 RUN mkdir /usr/share/landoop
 
-# Add Confluent Distribution
+# Add Confluent open-source distribution
 ENV CP_VERSION="3.3.1" KAFKA_VERSION="0.11.0.1"
 ARG CP_URL="https://packages.confluent.io/archive/3.3/confluent-oss-${CP_VERSION}-2.11.tar.gz"
 RUN wget "$CP_URL" -O /opt/confluent.tar.gz \
@@ -38,7 +42,6 @@ RUN wget "$CP_URL" -O /opt/confluent.tar.gz \
     && mkdir /opt/confluent/logs && chmod 1777 /opt/confluent/logs \
     && rm -rf /opt/confluent.tar.gz \
     && ln -s /opt/confluent "/opt/confluent-${CP_VERSION}"
-
 
 # Add Stream Reactor
 ARG STREAM_REACTOR_URL=https://archive.landoop.com/third-party/stream-reactor/stream-reactor-0.3.0_3.3.0.tar.gz
@@ -75,7 +78,7 @@ RUN wget https://github.com/Landoop/coyote/releases/download/v1.1/coyote-1.1-lin
     && mkdir -p /var/www/coyote-tests
 ADD integration-tests/index.html integration-tests/results /var/www/coyote-tests/
 
-# Add and Setup Schema-Registry-Ui
+# Add and set up Schema-Registry-Ui
 ARG SCHEMA_REGISTRY_UI_URL="https://github.com/Landoop/schema-registry-ui/releases/download/v.0.9.1/schema-registry-ui-0.9.1.tar.gz"
 RUN wget "$SCHEMA_REGISTRY_UI_URL" -O /schema-registry-ui.tar.gz \
     && mkdir -p /var/www/schema-registry-ui \
@@ -83,7 +86,7 @@ RUN wget "$SCHEMA_REGISTRY_UI_URL" -O /schema-registry-ui.tar.gz \
     && rm -f /schema-registry-ui.tar.gz
 COPY web/registry-ui-env.js /var/www/schema-registry-ui/env.js
 
-# Add and Setup Kafka-Topics-Ui
+# Add and set up Topics-Ui
 ARG KAFKA_TOPICS_UI_URL="https://github.com/Landoop/kafka-topics-ui/releases/download/v0.9.3/kafka-topics-ui-0.9.3.tar.gz"
 RUN wget "$KAFKA_TOPICS_UI_URL" -O /kafka-topics-ui.tar.gz \
     && mkdir /var/www/kafka-topics-ui \
@@ -91,7 +94,7 @@ RUN wget "$KAFKA_TOPICS_UI_URL" -O /kafka-topics-ui.tar.gz \
     && rm -f /kafka-topics-ui.tar.gz
 COPY web/topics-ui-env.js /var/www/kafka-topics-ui/env.js
 
-# Add and Setup Kafka-Connect-UI
+# Add and set up Connect-UI
 ARG KAFKA_CONNECT_UI_URL="https://github.com/Landoop/kafka-connect-ui/releases/download/v.0.9.3/kafka-connect-ui-0.9.3.tar.gz"
 RUN wget "$KAFKA_CONNECT_UI_URL" -O /kafka-connect-ui.tar.gz \
     && mkdir /var/www/kafka-connect-ui \
