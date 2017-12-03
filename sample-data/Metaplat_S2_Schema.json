@@ -1,0 +1,56 @@
+{
+  "type": "record",
+  "name": "S2",
+  "doc": "Dataset S2 - Metagenomic data for the analysis of the associations between relative abundances of microbial genes with methane emissions and feed conversion efficiency",
+  "namespace": "de.feu.lgmmia",
+  "fields": [
+    {
+      "name": "KEGG_Orthologue",
+      "type": "string"
+    },
+    {
+      "name": "Description_of_Microbial_Gene",
+      "type": "string"
+    },
+    {
+      "name": "Relative_Abundance_2019N0001",
+      "type": "float",
+      "doc": "Relative abundance of microbial genes (percentage) of animal code 2019N0001"
+    },
+    {
+      "name": "Relative_Abundance_2019N0002",
+      "type": "float",
+      "doc": "Relative abundance of microbial genes (percentage) of animal code 2019N0002"
+    },
+    {
+      "name": "Relative_Abundance_2019N0003",
+      "type": "float",
+      "doc": "Relative abundance of microbial genes (percentage) of animal code 2019N0003"
+    },
+    {
+      "name": "Relative_Abundance_2019N0004",
+      "type": "float",
+      "doc": "Relative abundance of microbial genes (percentage) of animal code 2019N0004"
+    },
+    {
+      "name": "Relative_Abundance_2019N0005",
+      "type": "float",
+      "doc": "Relative abundance of microbial genes (percentage) of animal code 2019N0005"
+    },
+    {
+      "name": "Relative_Abundance_2019N0006",
+      "type": "float",
+      "doc": "Relative abundance of microbial genes (percentage) of animal code 2019N0006"
+    },
+    {
+      "name": "Relative_Abundance_2019N0007",
+      "type": "float",
+      "doc": "Relative abundance of microbial genes (percentage) of animal code 2019N0007"
+    },
+    {
+      "name": "Relative_Abundance_2019N0008",
+      "type": "float",
+      "doc": "Relative abundance of microbial genes (percentage) of animal code 2019N0008"
+    }
+  ]
+}

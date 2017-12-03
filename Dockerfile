@@ -116,7 +116,7 @@ COPY web/index.html web/env.js web/env-webonly.js /var/www/
 COPY web/img /var/www/img
 RUN ln -s /var/log /var/www/logs
 
-# Add sample data and install normcat
+# Add sample data and install normcat tool
 ARG NORMCAT_URL=https://archive.landoop.com/tools/normcat/normcat_lowmem-1.1.1.tgz
 RUN wget "$NORMCAT_URL" -O /normcat.tgz \
     && tar xf /normcat.tgz -C /usr/local/bin \

@@ -19,7 +19,6 @@ SSL_EXTRA_HOSTS="${SSL_EXTRA_HOSTS:-}"
 DEBUG="${DEBUG:-false}"
 TOPIC_DELETE="${TOPIC_DELETE:-true}"
 SAMPLEDATA="${SAMPLEDATA:-1}"
-RUNNING_SAMPLEDATA="${RUNNING_SAMPLEDATA:-0}"
 export ZK_PORT BROKER_PORT BROKER_SSL_PORT REGISTRY_PORT REST_PORT CONNECT_PORT WEB_PORT RUN_AS_ROOT
 export ZK_JMX_PORT BROKER_JMX_PORT REGISTRY_JMX_PORT REST_JMX_PORT CONNECT_JMX_PORT DISABLE_JMX
 export ENABLE_SSL SSL_EXTRA_HOSTS DEBUG TOPIC_DELETE SAMPLEDATA RUNNING_SAMPLEDATA
@@ -275,12 +274,8 @@ CONNECT_HEAP="${CONNECT_HEAP:-1G}"
 export CONNECT_HEAP
 sed -e 's|{{CONNECT_HEAP}}|'"${CONNECT_HEAP}"'|' -i /etc/supervisord.d/*.conf
 
-# Set sample data if needed
-if echo "$RUNNING_SAMPLEDATA" | grep -sqE "true|TRUE|y|Y|yes|YES|1" && echo "$SAMPLEDATA" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
-        cp /usr/share/landoop/99-supervisord-running-sample-data.conf /etc/supervisord.d/
-elif echo "$SAMPLEDATA" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
-    # This should be added only if we don't have running data, because it sets
-    # retention period to 10 years (as the data is so few in this case).
+# Import sample data if requested
+if echo "$SAMPLEDATA" | grep -sqE "true|TRUE|y|Y|yes|YES|1"; then
     cp /usr/share/landoop/99-supervisord-sample-data.conf /etc/supervisord.d/
 else
     # If SAMPLEDATA=0 and FORWARDLOGS connector not explicitly requested
