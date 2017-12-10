@@ -22,6 +22,7 @@ RUN apk add --no-cache \
         sqlite \
         supervisor \
         tar \
+        unzip \
         wget \
     && echo "verbose = off" > /etc/wgetrc \
     && mkdir /opt \
@@ -43,13 +44,12 @@ RUN wget "$CP_URL" -O /opt/confluent.tar.gz \
     && rm -rf /opt/confluent.tar.gz \
     && ln -s /opt/confluent "/opt/confluent-${CP_VERSION}"
 
-# Add Stream Reactor
-ARG STREAM_REACTOR_URL=https://archive.landoop.com/third-party/stream-reactor/stream-reactor-0.3.0_3.3.0.tar.gz
-RUN wget "${STREAM_REACTOR_URL}" -O stream-reactor.tar.gz \
-    && mkdir -p /opt/connectors \
-    && tar -xzf stream-reactor.tar.gz --no-same-owner --strip-components=1 -C /opt/connectors \
-    && rm /stream-reactor.tar.gz \
-    && echo "plugin.path=/opt/connectors,/extra-connect-jars,/connectors" >> /opt/confluent/etc/schema-registry/connect-avro-distributed.properties
+# Add FTP Connector
+RUN mkdir -p /opt/connectors \
+    && wget https://gitlab.com/tuxaua/kafka-connect-ftp/-/jobs/artifacts/master/download?job=build -O artifacts.zip \
+    && unzip -j artifacts.zip -d /opt/connectors \
+    && rm artifacts.zip \
+    && echo "plugin.path=/opt/connectors,/connectors" >> /opt/confluent/etc/schema-registry/connect-avro-distributed.properties
 
 # Create system symlinks to Confluent's binaries
 ADD binaries /opt/confluent/bin-install
