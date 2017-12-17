@@ -49,7 +49,7 @@ RUN mkdir -p /opt/connectors \
     && wget https://gitlab.com/tuxaua/kafka-connect-ftp/-/jobs/artifacts/master/download?job=build -O artifacts.zip \
     && unzip -j artifacts.zip -d /opt/connectors \
     && rm artifacts.zip \
-    && echo "plugin.path=/opt/connectors,/connectors" >> /opt/confluent/etc/schema-registry/connect-avro-distributed.properties
+    && echo "plugin.path=/opt/connectors,/extra-connect-jars,/connectors" >> /opt/confluent/etc/schema-registry/connect-avro-distributed.properties
 
 # Create system symlinks to Confluent's binaries
 ADD binaries /opt/confluent/bin-install
