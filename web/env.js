@@ -24,37 +24,37 @@ var servicesInfo = [
   {
     "name" : "Kafka Broker",
     "port" : "9092",
-    "jmx"  : "9581 : JMX",
+    "jmx"  : "9581",
     "url"  : "localhost"
   },
   {
-    "name" : "Kafka Broker SSL 🔒",
+    "name" : "Kafka Broker SSL",
     "port" : "9093",
-    "jmx"  : "9581 : JMX",
+    "jmx"  : "9581",
     "url"  : "localhost"
   },
   {
     "name" : "Schema Registry",
     "port" : "8081",
-    "jmx"  : "9582 : JMX",
+    "jmx"  : "9582",
     "url"  : "http://localhost"
   },
   {
     "name" : "Kafka REST Proxy",
     "port" : "8082",
-    "jmx"  : "9583 : JMX",
+    "jmx"  : "9583",
     "url"  : "http://localhost"
   },
   {
     "name" : "Kafka Connect Distributed",
     "port" : "8083",
-    "jmx"  : "9584 : JMX",
+    "jmx"  : "9584",
     "url"  : "http://localhost"
   },
   {
     "name" : "ZooKeeper",
     "port" : "2181",
-    "jmx"  : "9585 : JMX",
+    "jmx"  : "9585",
     "url"  : "localhost"
   },
   {
@@ -67,13 +67,8 @@ var servicesInfo = [
 
 var exposedDirectories = [
   {
-    "name" : "running services log files",
+    "name" : "Log files",
     "url" : "/logs",
     "enabled" : "1"
   },
-  {
-    "name" : "certificates (truststore and client keystore)",
-    "url" : "/certs",
-    "enabled" : "ssl_browse"
-  }
 ];

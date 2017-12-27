@@ -9,18 +9,16 @@
     <meta name="author" content="Klaus-Dieter Schmatz">
     <link rel="shortcut icon" href="schema-registry-ui/src/assets/icons/favicon.png">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
-    <!-- <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.4/angular-material.min.css"> -->
     <link rel="stylesheet" href="schema-registry-ui/bower_components/angular-material/angular-material.min.css">
     <link rel="stylesheet" href="schema-registry-ui/bower_components/font-awesome/css/font-awesome.min.css">
     <style>
 body {background-color: #F5F5F5}
 h1 {margin: 12px 8px 12px 8px; text-align: center}
-h2,h3 {margin: 4px}
+h2 {margin: 3px}
 .app-card {color: #FFF; text-align: center}
-.app-card-actions {background-color: #FFF; color: #333; margin: 0px; padding: 8px; text-transform: uppercase}
+.app-card-actions {background-color: #FFF; color: #000; margin: 0px; padding: 8px; text-transform: uppercase}
 .info-card-header {border-bottom: 1px solid #CCC}
-.md-list-item-short {height: 15px; min-height: 15px}
-.ports-td {padding: 0 12px 4px 12px; font-size: 14px}
+.less-important {color: #555}
     </style>
   </head>
 
@@ -83,27 +81,27 @@ h2,h3 {margin: 4px}
 
       <div layout="row" layout-xs="column">
 
-        <!-- Services -->
+        <!-- Packages -->
         <md-card flex>
           <md-card-header class="info-card-header">
             <md-card-header-text>
-              <h2 class="md-title">Dockerized services</h2>
+              <h2 class="md-title">Packages</h2>
             </md-card-header-text>
           </md-card-header>
           <md-card-content>
             <md-list>
-              <md-list-item ng-repeat="service in runningServices" class="md-2-line md-long-text" style="margin: -0.4em">
-                <img src="img/ok.png" class="md-avatar" style="margin: 0 8px 16px 0; width: 20px; height: 20px" />
-                <div class="md-list-item-text" style="margin: 0 0 16px 0">
-                  <h4>{{service.name}}</h4>
-                  <p class="md-caption">{{service.description}}</p>
-                </div>
+              <md-list-item ng-repeat="service in runningServices">
+                <p class="md-body-1" style="padding-bottom: 12px">
+                {{service.name}}><br/>
+                <span class="less-important">{{service.description}}</span>
+                </p>
               </md-list-item>
             </md-list>
           </md-card-content>
         </md-card>
 
         <div flex layout="column" layout-xs="column">
+
           <!-- Ports -->
           <md-card>
             <md-card-header class="info-card-header">
@@ -112,11 +110,16 @@ h2,h3 {margin: 4px}
               </md-card-header-text>
             </md-card-header>
             <md-card-content>
-              <table>
-                <tr ng-repeat="i in servicesInfo">
-                  <td class="ports-td">{{i.port}}</td>
-                  <td class="ports-td">{{i.name}}</td>
-                  <td class="ports-td" style="color: #AAA">{{i.jmx}}</td>
+              <table class="md-body-1">
+                <tr>
+                  <th style="text-align: left">Name</td>
+                  <th>Service</td>
+                  <th>JMX</td>
+                </tr>
+                <tr ng-repeat="info in servicesInfo" ng-hide="{{info.port == ''}}">
+                  <td>{{info.name}}</td>
+                  <td style="padding: 0 2em 0 2em; text-align: right">{{info.port}}</td>
+                  <td class="less-important" style="text-align: right">{{info.jmx}}</td>
                 </tr>
               </table>
             </md-card-content>
@@ -130,11 +133,12 @@ h2,h3 {margin: 4px}
               </md-card-header-text>
             </md-card-header>
             <md-card-content>
-              <md-list>
-                <md-list-item ng-repeat="expdir in exposedDirectories | filter: { enabled: '1'}" class="md-list-item-short">
-                    <p>- <a style="text-decoration:none" href="{{expdir.url}}">{{expdir.name}}</a></p>
-                </md-list-item>
-              </md-list>
+              <table style="font-size: 14px">
+                <tr ng-repeat="expdir in exposedDirectories | filter: { enabled: '1'}">
+                  <td>-</td>
+                  <td><a style="text-decoration:none" href="{{expdir.url}}">{{expdir.name}}</a></td>
+                  </td>
+              </table>
             </md-card-content>
           </md-card>
         </div>
@@ -162,7 +166,7 @@ h2,h3 {margin: 4px}
 
     <script type="text/javascript">
 
-      angular
+angular
   .module('DockerPage', ['ngMaterial'])
   .controller('MainCtrl', function ($scope, $http, $log, $timeout, $interval) {
 
