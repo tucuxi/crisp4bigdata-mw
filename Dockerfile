@@ -113,7 +113,6 @@ ADD web/Caddyfile /usr/share/landoop
 
 # Add fast-data-dev UI
 COPY web/index.html web/env.js web/env-webonly.js /var/www/
-COPY web/img /var/www/img
 RUN ln -s /var/log /var/www/logs
 
 # Add sample data and install normcat tool
