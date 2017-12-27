@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>CRISP4BigData Mediator/Wrapper</title>
+    <title>CRISP4BigData Mediator/Wrapper Configuration</title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
@@ -14,146 +14,133 @@
     <link rel="stylesheet" href="schema-registry-ui/bower_components/font-awesome/css/font-awesome.min.css">
     <style>
 body {background-color: #F5F5F5;}
-.bigTotal,.tile-heading{text-align:center}
-.bigTotal{font-size:3em;margin:0;padding:0}
-.tile-heading{height:16px;line-height:16px;font-weight:400;opacity:.7;font-size:14px;text-transform:uppercase;display:block}
-.summary, .summary-title{text-align:center;font-weight: 500; letter-spacing: .010em; margin: 0;line-height: 1.6em; font-size:12px}
-.summary-title{text-transform:uppercase;padding:10px;text-decoration:none}
-.summary{opacity:.7;padding:0 10px;min-height:30px}
-h1,h2,h3,h5{font-family:Tahoma;font-weight:200;color:#666;padding-left:10px;margin:10px;}
+.bigTotal{font-size:3em; text-align:center; margin:0; padding:0}
+.tile-heading{height:16px; line-height:16px; font-weight:400; opacity:.7; font-size:14px; text-align:center; text-transform:uppercase; display:block}
+.summary, .summary-title{text-align:center; font-weight:500; letter-spacing:.01em; margin:0; line-height:1.6em; font-size:12px}
+.summary-title{text-transform:uppercase; padding:10px; text-decoration:none}
+.summary{opacity:.7; padding:0 10px; min-height:30px}
+h1,h2,h3,h4,h5{font-weight:200; color:#666; padding-left:10px; margin:10px}
 .card-link{text-decoration:none;cursor:hand}
-.md-list-item-short { height: 15px; min-height: 15px;}
-.important-message { color: #ff6f10; }
-.important-message code { background-color: #FCFCFC; }
+.md-list-item-short {height: 15px; min-height: 15px}
     </style>
   </head>
 
   <body ng-app="DockerPage" ng-cloak>
 
     <div ng-controller="MainCtrl" style="background-color: #F5F5F5">
-      <h1>CRISP4BigData Mediator/Wrapper</h1>
+      <h1>CRISP4BigData Mediator/Wrapper Configuration</h1>
 
       <!--Applications -->
-      <div flex layout="row" layout-xs="column">
+      <div layout="row" layout-xs="column">
 
         <!--Schemas-->
-        <div flex>
-          <md-card style="background-color: #2196F3; color: #FFF">
-            <md-card-title style="padding-bottom:5px">
-              <md-card-title-text>
-                <span class="md-headline tile-heading">Schemas</span>
-              </md-card-title-text>
-            </md-card-title>
-            <md-card-content>
-              <div layout="row" layout-xs="column" layout-wrap>
-                <div flex>
-                  <p class="bigTotal">{{schemas}}</p>
-                </div>
+        <md-card flex style="background-color: #2196F3; color: #FFF">
+          <md-card-title style="padding-bottom:5px">
+            <md-card-title-text>
+              <span class="md-headline tile-heading">Schemas</span>
+            </md-card-title-text>
+          </md-card-title>
+          <md-card-content>
+            <div layout="row" layout-xs="column" layout-wrap>
+              <div flex>
+                <p class="bigTotal">{{schemas}}</p>
               </div>
-            </md-card-content>
-            <md-card-actions layout="column" layout-align="start" style="background-color:#FFF;color:#333;margin:0px;">
-              <div class="summary-title">Schema Registry UI</div>
-              <md-button class="md-primary summary" style="margin:5px" ng-href="./schema-registry-ui/">Manage schemas</md-button>
-            </md-card-actions>
-          </md-card>
-        </div>
+            </div>
+          </md-card-content>
+          <md-card-actions layout="column" layout-align="start" style="background-color:#FFF;color:#333;margin:0px">
+            <div class="summary-title">Schema Registry UI</div>
+            <md-button class="md-primary summary" style="margin:5px" ng-href="./schema-registry-ui/">Manage schemas</md-button>
+          </md-card-actions>
+        </md-card>
 
         <!--Topics-->
-        <div flex>
-          <md-card style="background-color: #7C4DFF; color: #FFF">
-            <md-card-title style="padding-bottom:5px">
-              <md-card-title-text>
-                <span class="md-headline tile-heading">Topics</span>
-              </md-card-title-text>
-            </md-card-title>
-            <md-card-content>
-              <div layout="row" layout-xs="column" layout-wrap>
-                <div flex>
-                  <p class="bigTotal">{{topics}}</p>
-                </div>
+        <md-card flex style="background-color: #7C4DFF; color: #FFF">
+          <md-card-title style="padding-bottom:5px">
+            <md-card-title-text>
+              <span class="md-headline tile-heading">Topics</span>
+            </md-card-title-text>
+          </md-card-title>
+          <md-card-content>
+            <div layout="row" layout-xs="column" layout-wrap>
+              <div flex>
+                <p class="bigTotal">{{topics}}</p>
               </div>
-            </md-card-content>
-            <md-card-actions layout="column" layout-align="start" style="background-color:#FFF;color:#333;margin:0px;">
-              <div class="summary-title">Kafka Topics UI</div>
-              <md-button class="md-primary summary" style="margin:5px" ng-href="./kafka-topics-ui/">Browse topics</md-button>
-            </md-card-actions>
-          </md-card>
-        </div>
+            </div>
+          </md-card-content>
+          <md-card-actions layout="column" layout-align="start" style="background-color:#FFF;color:#333;margin:0px">
+            <div class="summary-title">Kafka Topics UI</div>
+            <md-button class="md-primary summary" style="margin:5px" ng-href="./kafka-topics-ui/">Browse topics</md-button>
+          </md-card-actions>
+        </md-card>
 
         <!--Connectors-->
-        <div flex>
-          <md-card style="background-color: #AD1457; color: #FFF">
-            <md-card-title style="padding-bottom:5px;">
-              <md-card-title-text>
-                <span class="md-headline tile-heading">Connectors</span>
-              </md-card-title-text>
-            </md-card-title>
-            <md-card-content>
-              <div layout="row" layout-xs="column" layout-wrap>
-                <div flex>
-                  <p class="bigTotal">{{connectors}}</p>
-                </div>
+        <md-card flex style="background-color: #AD1457; color: #FFF">
+          <md-card-title style="padding-bottom:5px">
+            <md-card-title-text>
+              <span class="md-headline tile-heading">Connectors</span>
+            </md-card-title-text>
+          </md-card-title>
+          <md-card-content>
+            <div layout="row" layout-xs="column" layout-wrap>
+              <div flex>
+                <p class="bigTotal">{{connectors}}</p>
               </div>
-            </md-card-content>
-            <md-card-actions layout="column" layout-align="end center" style="background-color:#FFF;color:#333;margin:0px;">
-              <div class="summary-title">Kafka connect UI</div>
-              <md-button class="md-primary summary" style="margin:5px" ng-href="./kafka-connect-ui/">Manage connectors</md-button>
-            </md-card-actions>
-          </md-card>
-        </div>
+            </div>
+          </md-card-content>
+          <md-card-actions layout="column" layout-align="end center" style="background-color:#FFF;color:#333;margin:0px">
+            <div class="summary-title">Kafka connect UI</div>
+            <md-button class="md-primary summary" style="margin:5px" ng-href="./kafka-connect-ui/">Manage connectors</md-button>
+          </md-card-actions>
+        </md-card>
       </div>
 
-      <div flex layout="row" layout-xs="column">
-        <div flex="50">
-          <!-- Services -->
-          <md-card>
-            <md-card-header style="border-bottom:1px solid #ccc;">
-              <md-card-header-text>
-                <span class="md-headline tile-heading" style="text-align:left"><b>Dockerized services</b></span>
-              </md-card-header-text>
-            </md-card-header>
-            <md-card-content>
-              <md-list>
-                <md-list-item ng-repeat="service in runningServices" class="md-2-line md-long-text" style="margin:-0.4em;">
-                  <img src="img/ok.png" class="md-avatar" style="margin-top:10px;margin-bottom:6px; width:20px; height:20px;"  />
-                  <div class="md-list-item-text" style="margin-top:8px;margin-bottom:8px;">
-                    <h4>{{service.name}}</h4>
-                    <p style="font-size:12px;">{{service.description}}</p>
-                  </div>
-                </md-list-item>
-              </md-list>
-            </md-card-content>
-          </md-card>
-        </div>
+      <div layout="row" layout-xs="column">
+        <!-- Services -->
+        <md-card flex>
+          <md-card-header style="border-bottom:1px solid #CCC">
+            <md-card-header-text>
+              <span class="md-headline tile-heading" style="text-align:center"><b>Dockerized services</b></span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-content>
+            <md-list>
+              <md-list-item ng-repeat="service in runningServices" class="md-2-line md-long-text" style="margin:-0.4em;">
+                <img src="img/ok.png" class="md-avatar" style="margin-top:10px;margin-bottom:6px; width:20px; height:20px;"  />
+                <div class="md-list-item-text" style="margin-top:8px;margin-bottom:8px;">
+                  <h4>{{service.name}}</h4>
+                  <p style="font-size:12px;">{{service.description}}</p>
+                </div>
+              </md-list-item>
+            </md-list>
+          </md-card-content>
+        </md-card>
 
-        <div flex="50">
-          <!-- Ports -->
-          <md-card>
-            <md-card-header style="border-bottom:1px solid #ccc;">
-              <md-card-header-text>
-                <span class="md-headline tile-heading" style="text-align:left"><b>Ports</b></span>
-              </md-card-header-text>
-            </md-card-header>
-            <md-card-content>
-              <table style="font-size:12px">
-                <tr ng-repeat="i in servicesInfo">
-                  <td style="padding: 2px 12px 2px 12px">{{i.name}}</td> 
-                  <td style="padding: 2px 12px 2px 12px">{{i.port}}</td> 
-                  <td style="padding: 2px 12px 2px 12px; color: #AAA">{{i.jmx}}</td>
-                </tr>
-              </table>
-            </md-card-content>
-          </md-card>
-        </div>
+        <!-- Ports -->
+        <md-card flex> 
+          <md-card-header style="border-bottom:1px solid #CCC">
+            <md-card-header-text>
+              <span class="md-headline tile-heading" style="text-align:center"><b>Ports</b></span>
+            </md-card-header-text>
+          </md-card-header>
+          <md-card-content>
+            <table style="font-size:12px">
+              <tr ng-repeat="i in servicesInfo">
+                <td style="padding: 2px 12px 2px 12px">{{i.name}}</td> 
+                <td style="padding: 2px 12px 2px 12px">{{i.port}}</td> 
+                <td style="padding: 2px 12px 2px 12px; color: #AAA">{{i.jmx}}</td>
+              </tr>
+            </table>
+          </md-card-content>
+        </md-card>
       </div>
 
-      <!--Browse logs -->
+      <!-- Files -->
       <md-card>
-        <md-card-title style="padding-bottom:5px;">
-          <md-card-title-text>
-            <span class="md-headline tile-heading"><b>Browse</b></span>
-          </md-card-title-text>
-        </md-card-title>
+        <md-card-header style="border-bottom:1px solid #CCC">
+          <md-card-header-text>
+            <span class="md-headline tile-heading" style="text-align:center"><b>Files</b></span>
+          </md-card-header-text>
+        </md-card-header>
         <md-card-content>
           <md-list>
             <md-list-item ng-repeat="expdir in exposedDirectories | filter: { enabled: '1'}" flex class="md-list-item-short" style="padding: 0">
@@ -166,16 +153,17 @@ h1,h2,h3,h5{font-family:Tahoma;font-weight:200;color:#666;padding-left:10px;marg
       </md-card>
 
       <!--Footer-->
-      <h6 style="text-align:center;margin-bottom:5px;">Report Issues & Stars!</h6>
-      <div flex layout="row" layout-align="center center">
+      <div layout="column" layout-align="center center">
+        <div flex>
+          <a class="github-button" href="https://github.com/tucuxi/crisp4bigdata-mw/issues" data-count-api="/repos/tucuxi/crisp4bigdata-mw#open_issues_count" data-count-aria-label="# issues on GitHub" aria-label="Issue on GitHub">Issue</a>
+        </div>
 
-        <a class="github-button" href="https://github.com/Landoop/fast-data-dev/issues" data-count-api="/repos/Landoop/fast-data-dev#open_issues_count" data-count-aria-label="# issues on GitHub" aria-label="Issue Landoop/fast-data-dev on GitHub">Issue</a>
-        <a class="github-button" href="https://github.com/Landoop/fast-data-dev" data-count-href="/Landoop/fast-data-dev/stargazers" data-count-api="/repos/Landoop/fast-data-dev#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star Landoop/fast-data-dev on GitHub">Star</a>
-      </div>
-
-      <div flex layout="row" layout-align="center center">
-        <img ng-src="img/landoop-blue.svg" style="width:20px;float: left;padding-right:5px;">
-        <p style="font-size:10px;">powered by <a href="http://www.landoop.com" style="text-decoration:none;color:blue;" target="_blank">Landoop</a></p>
+        <div flex>
+          <p style="font-size:10px">
+          CRISP4BigData-MW was forked from <a href="https://github.com/Landoop/fast-data-dev" style="text-decoration:none;color=blue">Landoop/fast-data-dev</a>
+          created by <a href="http://www.landoop.com" style="text-decoration:none;color:blue" target="_blank">Landoop</a>.
+          </p>
+        </div>
       </div>
 
     </div>
@@ -197,7 +185,7 @@ h1,h2,h3,h5{font-family:Tahoma;font-weight:200;color:#666;padding-left:10px;marg
 
     <script type="text/javascript">
 
-angular
+      angular
   .module('DockerPage', ['ngMaterial'])
   .controller('MainCtrl', function ($scope, $http, $log, $timeout, $interval) {
 
