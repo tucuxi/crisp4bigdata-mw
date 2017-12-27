@@ -1,171 +1,151 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>CRISP4BigData Mediator/Wrapper Configuration</title>
+    <title>CRISP4BigData Mediator/Wrapper</title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <meta name="description" content="CRISP4BigData Mediator/Wrapper">
     <meta name="author" content="Klaus-Dieter Schmatz">
     <link rel="shortcut icon" href="schema-registry-ui/src/assets/icons/favicon.png">
-
-    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+    <!-- <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.4/angular-material.min.css"> -->
     <link rel="stylesheet" href="schema-registry-ui/bower_components/angular-material/angular-material.min.css">
     <link rel="stylesheet" href="schema-registry-ui/bower_components/font-awesome/css/font-awesome.min.css">
     <style>
-body {background-color: #F5F5F5;}
-.bigTotal{font-size:3em; text-align:center; margin:0; padding:0}
-.tile-heading{height:16px; line-height:16px; font-weight:400; opacity:.7; font-size:14px; text-align:center; text-transform:uppercase; display:block}
-.summary, .summary-title{text-align:center; font-weight:500; letter-spacing:.01em; margin:0; line-height:1.6em; font-size:12px}
-.summary-title{text-transform:uppercase; padding:10px; text-decoration:none}
-.summary{opacity:.7; padding:0 10px; min-height:30px}
-h1,h2,h3,h4,h5{font-weight:200; color:#666; padding-left:10px; margin:10px}
-.card-link{text-decoration:none;cursor:hand}
+body {background-color: #F5F5F5}
+h1 {margin: 12px 8px 12px 8px; text-align: center}
+h2,h3 {margin: 4px}
+.app-card {color: #FFF; text-align: center}
+.app-card-actions {background-color: #FFF; color: #333; margin: 0px; padding: 8px; text-transform: uppercase}
+.info-card-header {border-bottom: 1px solid #CCC}
 .md-list-item-short {height: 15px; min-height: 15px}
+.ports-td {padding: 0 12px 4px 12px; font-size: 14px}
     </style>
   </head>
 
   <body ng-app="DockerPage" ng-cloak>
 
     <div ng-controller="MainCtrl" style="background-color: #F5F5F5">
-      <h1>CRISP4BigData Mediator/Wrapper Configuration</h1>
+      <h1 class="md-display-1">CRISP4BigData Mediator/Wrapper</h1>
 
       <!--Applications -->
       <div layout="row" layout-xs="column">
 
         <!--Schemas-->
-        <md-card flex style="background-color: #2196F3; color: #FFF">
-          <md-card-title style="padding-bottom:5px">
+        <md-card flex class="app-card" style="background-color: #2196F3">
+          <md-card-title>
             <md-card-title-text>
-              <span class="md-headline tile-heading">Schemas</span>
+              <h2 class="md-title">Schemas</h2>
             </md-card-title-text>
           </md-card-title>
           <md-card-content>
-            <div layout="row" layout-xs="column" layout-wrap>
-              <div flex>
-                <p class="bigTotal">{{schemas}}</p>
-              </div>
-            </div>
+            <p class="md-display-2">{{schemas}}</p>
           </md-card-content>
-          <md-card-actions layout="column" layout-align="start" style="background-color:#FFF;color:#333;margin:0px">
-            <div class="summary-title">Schema Registry UI</div>
-            <md-button class="md-primary summary" style="margin:5px" ng-href="./schema-registry-ui/">Manage schemas</md-button>
+          <md-card-actions layout="column" class="app-card-actions">
+            <h3 class="md-subhead">Schema Registry UI</h3>
+            <md-button ng-href="./schema-registry-ui/">Manage schemas</md-button>
           </md-card-actions>
         </md-card>
 
         <!--Topics-->
-        <md-card flex style="background-color: #7C4DFF; color: #FFF">
-          <md-card-title style="padding-bottom:5px">
+        <md-card flex class="app-card" style="background-color: #7C4DFF">
+          <md-card-title>
             <md-card-title-text>
-              <span class="md-headline tile-heading">Topics</span>
+              <h2 class="md-title">Topics</h2>
             </md-card-title-text>
           </md-card-title>
           <md-card-content>
-            <div layout="row" layout-xs="column" layout-wrap>
-              <div flex>
-                <p class="bigTotal">{{topics}}</p>
-              </div>
-            </div>
+            <p class="md-display-2">{{topics}}</p>
           </md-card-content>
-          <md-card-actions layout="column" layout-align="start" style="background-color:#FFF;color:#333;margin:0px">
-            <div class="summary-title">Kafka Topics UI</div>
-            <md-button class="md-primary summary" style="margin:5px" ng-href="./kafka-topics-ui/">Browse topics</md-button>
+          <md-card-actions layout="column" class="app-card-actions">
+            <h3 class="md-subhead">Kafka Topics UI</h3>
+            <md-button ng-href="./kafka-topics-ui/">Browse topics</md-button>
           </md-card-actions>
         </md-card>
 
         <!--Connectors-->
-        <md-card flex style="background-color: #AD1457; color: #FFF">
-          <md-card-title style="padding-bottom:5px">
+        <md-card flex class="app-card" style="background-color: #AD1457">
+          <md-card-title>
             <md-card-title-text>
-              <span class="md-headline tile-heading">Connectors</span>
+              <h2 class="md-title">Connectors</h2>
             </md-card-title-text>
           </md-card-title>
           <md-card-content>
-            <div layout="row" layout-xs="column" layout-wrap>
-              <div flex>
-                <p class="bigTotal">{{connectors}}</p>
-              </div>
-            </div>
+            <p class="md-display-2">{{connectors}}</p>
           </md-card-content>
-          <md-card-actions layout="column" layout-align="end center" style="background-color:#FFF;color:#333;margin:0px">
-            <div class="summary-title">Kafka connect UI</div>
-            <md-button class="md-primary summary" style="margin:5px" ng-href="./kafka-connect-ui/">Manage connectors</md-button>
+          <md-card-actions layout="column" class="app-card-actions">
+            <h3 class="md-subhead">Kafka Connect UI</h3>
+            <md-button ng-href="./kafka-connect-ui/">Manage connectors</md-button>
           </md-card-actions>
         </md-card>
       </div>
 
       <div layout="row" layout-xs="column">
+
         <!-- Services -->
         <md-card flex>
-          <md-card-header style="border-bottom:1px solid #CCC">
+          <md-card-header class="info-card-header">
             <md-card-header-text>
-              <span class="md-headline tile-heading" style="text-align:center"><b>Dockerized services</b></span>
+              <h2 class="md-title">Dockerized services</h2>
             </md-card-header-text>
           </md-card-header>
           <md-card-content>
             <md-list>
-              <md-list-item ng-repeat="service in runningServices" class="md-2-line md-long-text" style="margin:-0.4em;">
-                <img src="img/ok.png" class="md-avatar" style="margin-top:10px;margin-bottom:6px; width:20px; height:20px;"  />
-                <div class="md-list-item-text" style="margin-top:8px;margin-bottom:8px;">
+              <md-list-item ng-repeat="service in runningServices" class="md-2-line md-long-text" style="margin: -0.4em">
+                <img src="img/ok.png" class="md-avatar" style="margin: 0 8px 16px 0; width: 20px; height: 20px" />
+                <div class="md-list-item-text" style="margin: 0 0 16px 0">
                   <h4>{{service.name}}</h4>
-                  <p style="font-size:12px;">{{service.description}}</p>
+                  <p class="md-caption">{{service.description}}</p>
                 </div>
               </md-list-item>
             </md-list>
           </md-card-content>
         </md-card>
 
-        <!-- Ports -->
-        <md-card flex> 
-          <md-card-header style="border-bottom:1px solid #CCC">
-            <md-card-header-text>
-              <span class="md-headline tile-heading" style="text-align:center"><b>Ports</b></span>
-            </md-card-header-text>
-          </md-card-header>
-          <md-card-content>
-            <table style="font-size:12px">
-              <tr ng-repeat="i in servicesInfo">
-                <td style="padding: 2px 12px 2px 12px">{{i.name}}</td> 
-                <td style="padding: 2px 12px 2px 12px">{{i.port}}</td> 
-                <td style="padding: 2px 12px 2px 12px; color: #AAA">{{i.jmx}}</td>
-              </tr>
-            </table>
-          </md-card-content>
-        </md-card>
-      </div>
+        <div flex layout="column" layout-xs="column">
+          <!-- Ports -->
+          <md-card>
+            <md-card-header class="info-card-header">
+              <md-card-header-text>
+                <h2 class="md-title">Ports</h2>
+              </md-card-header-text>
+            </md-card-header>
+            <md-card-content>
+              <table>
+                <tr ng-repeat="i in servicesInfo">
+                  <td class="ports-td">{{i.port}}</td>
+                  <td class="ports-td">{{i.name}}</td>
+                  <td class="ports-td" style="color: #AAA">{{i.jmx}}</td>
+                </tr>
+              </table>
+            </md-card-content>
+          </md-card>
 
-      <!-- Files -->
-      <md-card>
-        <md-card-header style="border-bottom:1px solid #CCC">
-          <md-card-header-text>
-            <span class="md-headline tile-heading" style="text-align:center"><b>Files</b></span>
-          </md-card-header-text>
-        </md-card-header>
-        <md-card-content>
-          <md-list>
-            <md-list-item ng-repeat="expdir in exposedDirectories | filter: { enabled: '1'}" flex class="md-list-item-short" style="padding: 0">
-              <div flex="" layout="row" layout-xs="column" class="layout-xs-column layout-row flex">
-                <h5>- <a style="text-decoration:none;" href="{{expdir.url}}">{{expdir.name}}</a></h5>
-              </div>
-            </md-list-item>
-          </md-list>
-        </md-card-content>
-      </md-card>
+          <!-- Files -->
+          <md-card>
+            <md-card-header class="info-card-header">
+              <md-card-header-text>
+                <h2 class="md-title">Files</h2>
+              </md-card-header-text>
+            </md-card-header>
+            <md-card-content>
+              <md-list>
+                <md-list-item ng-repeat="expdir in exposedDirectories | filter: { enabled: '1'}" class="md-list-item-short">
+                    <p>- <a style="text-decoration:none" href="{{expdir.url}}">{{expdir.name}}</a></p>
+                </md-list-item>
+              </md-list>
+            </md-card-content>
+          </md-card>
+        </div>
+      </div>
 
       <!--Footer-->
-      <div layout="column" layout-align="center center">
-        <div flex>
-          <a class="github-button" href="https://github.com/tucuxi/crisp4bigdata-mw/issues" data-count-api="/repos/tucuxi/crisp4bigdata-mw#open_issues_count" data-count-aria-label="# issues on GitHub" aria-label="Issue on GitHub">Issue</a>
-        </div>
-
-        <div flex>
-          <p style="font-size:10px">
-          CRISP4BigData-MW was forked from <a href="https://github.com/Landoop/fast-data-dev" style="text-decoration:none;color=blue">Landoop/fast-data-dev</a>
-          created by <a href="http://www.landoop.com" style="text-decoration:none;color:blue" target="_blank">Landoop</a>.
-          </p>
-        </div>
+      <div align="center">
+        <span class="md-caption">
+          CRISP4BigData-MW was forked from <a href="https://github.com/Landoop/fast-data-dev" style="text-decoration:none;color=blue">Landoop/fast-data-dev</a>.
+        </span>
       </div>
-
     </div>
 
     <!-- Angular Material requires Angular.js Libraries -->
@@ -175,9 +155,6 @@ h1,h2,h3,h4,h5{font-weight:200; color:#666; padding-left:10px; margin:10px}
 
     <!-- Angular Material Library -->
     <script src="schema-registry-ui/bower_components/angular-material/angular-material.min.js"></script>
-
-    <!--Github Buttons-->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
 
     <!-- Place this tag where you want the button to render. -->
     <!-- Custom js -->
