@@ -68,7 +68,7 @@ var servicesInfo = [
 var exposedDirectories = [
   {
     "name" : "Log files",
-    "url" : "/logs",
+    "url" : "/logs/",
     "enabled" : "1"
   },
 ];
