@@ -17,5 +17,4 @@ proxy /api/kafka-connect 0.0.0.0:8083 {
     without /api/kafka-connect
 }
 
-browse /certs
 browse /logs
