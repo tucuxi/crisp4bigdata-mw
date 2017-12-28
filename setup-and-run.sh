@@ -49,12 +49,6 @@ listeners=PLAINTEXT://:$BROKER_PORT
 confluent.support.metrics.enable=false
 EOF
 
-## Disabled because the basic replacements catch it
-# cat <<EOF >>/opt/confluent/etc/schema-registry/schema-registry.properties
-
-# listeners=http://0.0.0.0:$REGISTRY_PORT
-# EOF
-
 ## REST Proxy specific
 cat <<EOF >>/opt/confluent/etc/kafka-rest/kafka-rest.properties
 
@@ -71,12 +65,11 @@ cat <<EOF >>/opt/confluent/etc/schema-registry/connect-avro-distributed.properti
 rest.port=$CONNECT_PORT
 EOF
 
-## Other infra specific (caddy, web ui, tests, logs)
+## Other infra specific (caddy, web ui, logs)
 sed -e 's/3030/'"$WEB_PORT"'/' -e 's/2181/'"$ZK_PORT"'/' -e 's/9092/'"$BROKER_PORT"'/' \
     -e 's/8081/'"$REGISTRY_PORT"'/' -e 's/8082/'"$REST_PORT"'/' -e 's/8083/'"$CONNECT_PORT"'/' \
     -i /usr/share/landoop/Caddyfile \
        /var/www/env.js \
-       /usr/share/landoop/kafka-tests.yml \
        /usr/local/bin/logs-to-kafka.sh
 
 # Allow for topic deletion by default, unless TOPIC_DELETE is set
@@ -93,7 +86,7 @@ if [[ ! -z "${ADV_HOST}" ]]; then
          >> /opt/confluent/etc/kafka/server.properties
     echo -e "\nrest.advertised.host.name=${ADV_HOST}" \
          >> /opt/confluent/etc/schema-registry/connect-avro-distributed.properties
-    sed -e 's#localhost#'"${ADV_HOST}"'#g' -i /usr/share/landoop/kafka-tests.yml /var/www/env.js /etc/supervisord.d/*
+    sed -e 's#localhost#'"${ADV_HOST}"'#g' -i /var/www/env.js /etc/supervisord.d/*
 fi
 
 # Configure JMX if needed or disable it.
@@ -255,7 +248,7 @@ export PRINT_HOST
 # shellcheck disable=SC1091
 [[ -f /build.info ]] && source /build.info
 echo -e "\e[92mStarting services.\e[39m"
-echo -e "\e[92mThis is landoop’s fast-data-dev. Kafka $KAFKA_VERSION, Confluent OSS $CP_VERSION.\e[39m"
+echo -e "\e[92mKafka $KAFKA_VERSION, Confluent OSS $CP_VERSION.\e[39m"
 echo -e "\e[34mYou may visit \e[96mhttp://${PRINT_HOST}:${WEB_PORT}\e[34m in about \e[96ma minute\e[34m.\e[39m"
 
 # Set connect heap size if needed

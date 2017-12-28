@@ -44,7 +44,7 @@ RUN wget "$CP_URL" -O /opt/confluent.tar.gz \
     && rm -rf /opt/confluent.tar.gz \
     && ln -s /opt/confluent "/opt/confluent-${CP_VERSION}"
 
-# Add FTP Connector
+# Add FTP Connector with Metaplat source record converter
 RUN mkdir -p /opt/connectors \
     && wget https://gitlab.com/tuxaua/kafka-connect-ftp/-/jobs/artifacts/master/download?job=build -O artifacts.zip \
     && unzip -j artifacts.zip -d /opt/connectors \
@@ -69,14 +69,6 @@ RUN echo "access.control.allow.methods=GET,POST,PUT,DELETE,OPTIONS" >> /opt/conf
 RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 -O /usr/local/bin/dumb-init \
     && wget https://github.com/andmarios/quickcert/releases/download/1.0/quickcert-1.0-linux-amd64-alpine -O /usr/local/bin/quickcert \
     && chmod 0755 /usr/local/bin/dumb-init /usr/local/bin/quickcert
-
-# Add Coyote and tests
-ADD integration-tests/kafka-tests.yml /usr/share/landoop
-ADD integration-tests/smoke-tests.sh /usr/local/bin
-RUN wget https://github.com/Landoop/coyote/releases/download/v1.1/coyote-1.1-linux-amd64 -O /usr/local/bin/coyote \
-    && chmod +x /usr/local/bin/coyote /usr/local/bin/smoke-tests.sh \
-    && mkdir -p /var/www/coyote-tests
-ADD integration-tests/index.html integration-tests/results /var/www/coyote-tests/
 
 # Add and set up Schema-Registry-Ui
 ARG SCHEMA_REGISTRY_UI_URL="https://github.com/Landoop/schema-registry-ui/releases/download/v.0.9.1/schema-registry-ui-0.9.1.tar.gz"
@@ -111,7 +103,7 @@ RUN wget "$CADDY_URL" -O /caddy.tgz \
     && rm -f /caddy.tgz
 ADD web/Caddyfile /usr/share/landoop
 
-# Add fast-data-dev UI
+# Add entry page
 COPY web/index.html web/env.js web/env-webonly.js /var/www/
 RUN ln -s /var/log /var/www/logs
 

@@ -147,7 +147,8 @@ h2 {margin: 3px}
       <!--Footer-->
       <div align="center">
         <span class="md-caption">
-          CRISP4BigData-MW was forked from <a href="https://github.com/Landoop/fast-data-dev" style="text-decoration:none;color=blue">Landoop/fast-data-dev</a>.
+          CRISP4BigData-MW was forked from
+          <a href="https://github.com/Landoop/fast-data-dev" style="text-decoration:none;color=blue">Landoop/fast-data-dev</a>.
         </span>
       </div>
     </div>
@@ -160,7 +161,6 @@ h2 {margin: 3px}
     <!-- Angular Material Library -->
     <script src="schema-registry-ui/bower_components/angular-material/angular-material.min.js"></script>
 
-    <!-- Place this tag where you want the button to render. -->
     <!-- Custom js -->
     <script src="env.js"></script>
 
@@ -168,15 +168,14 @@ h2 {margin: 3px}
 
 angular
   .module('DockerPage', ['ngMaterial'])
-  .controller('MainCtrl', function ($scope, $http, $log, $timeout, $interval) {
+  .controller('MainCtrl', function($scope, $http, $log, $timeout, $interval) {
 
-    //LOAD ENV vars
+    // Load env vars
     $scope.runningServices = runningServices;
     $scope.servicesInfo = servicesInfo;
     $scope.exposedDirectories = exposedDirectories;
 
-    //SUMMARIES
-    this.getSummaries = function (){
+    this.getSummaries = function() {
       $http.get('/api/schema-registry/subjects/')
         .then(
           function successCallback(response) { $scope.schemas = response.data.length },
@@ -197,48 +196,17 @@ angular
           function successCallback(response) { $scope.brokers = response.data.brokers.length },
           function errorCallback(response) { $log.error("Failure with : " + response) });
     };
-    //initial invoke
+
     this.getSummaries();
 
-    //COYOTE
-    $scope.running = true;
-
-    function calculateChart(passed, failed) {
-      var c = Math.PI * ( 40 * 2); //r=40
-      var percentage = (passed * 100) / (passed + failed);
-      percentage = Math.round( percentage * 10 ) / 10;
-      console.log("percentage " + percentage);
-      if (percentage < 0) { percentage = 0;}
-      if (percentage > 100) { percentage = 100;}
-      $scope.chartValue = ((100-percentage)/100)*c;
-      $scope.chartPercentage = percentage;
-    }
-
-    this.loadCoyoteResults = function (){
-      $http.get('/coyote-tests/results').then(function(response){
-        passed = response.data.passed;
-        failed = response.data.failed;
-        if (passed != 0 || failed != 0) {
-          $scope.running = false;
-          $scope.coyoteResults = response.data;
-          calculateChart(response.data.passed, response.data.failed);
-          return;
-        }
-      });
-    };
-
-    //Put in interval, first trigger after 10 seconds
-    var theInterval = $interval(function(){
-      this.loadCoyoteResults();
+    // First trigger after 10 seconds
+    var theInterval = $interval(function() {
       this.getSummaries();
     }.bind(this), 10000);
 
-    $scope.$on('$destroy', function () {
+    $scope.$on('$destroy', function() {
       $interval.cancel(theInterval)
     });
-
-    //invoke initialy
-    this.loadCoyoteResults();
 
     //--- end of controller
   });
