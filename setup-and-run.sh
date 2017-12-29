@@ -220,8 +220,8 @@ fi
 # Check for Available RAM
 RAKB="$(grep MemA /proc/meminfo | sed -r -e 's/.* ([0-9]+) kB/\1/')"
 if [[ -z "$RAKB" ]]; then
-        echo -e "\e[91mCould not detect available RAM, probably due to very old Linux Kernel."
-        echo -e "\e[91mPlease make sure you have the recommended minimum of \e[93m4096 MiB\e[91m RAM available for fast-data-dev.\e[39m"
+        echo -e "\e[91mCould not detect available RAM, probably due to Linux Kernel prior to 3.14."
+        echo -e "\e[91mPlease make sure you have the recommended minimum of \e[93m4096 MiB\e[91m RAM available.\e[39m"
 else
     RAMB="$(( RAKB / 1024 ))"
     RAREC=5120
