@@ -1,3 +1,5 @@
+crisp4bigdata-mw is derived from fast-data-dev.
+
 fast-data-dev
 Copyright 2016-2017 Landoop LTD
 
@@ -14,7 +16,6 @@ The most important software components and their license are:
 
 Caddy                         : Apache 2.0
 Confluent Platform            : Apache 2.0
-Datamountaineer Stream Reactor: Apache 2.0
 Kafka Connect UI              : BSL (http://www.landoop.com/bsl/)
 Kafka Topics UI               : BSL (http://www.landoop.com/bsl/)
 Schema Registry UI            : BSL (http://www.landoop.com/bsl/)
